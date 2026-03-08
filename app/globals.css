@@ -1,0 +1,168 @@
+@import "tailwindcss";
+
+@theme {
+    /* TYPOGRAPHY */
+    --font-heading: var(--font-outfit), sans-serif;
+    --font-body: var(--font-outfit), sans-serif;
+
+    /* EARTHY PALETTE REFINED */
+
+    /* STRICT YELLOW & OLIVE PALETTE */
+
+    /* Core Tones */
+    --color-black: #1A2118;
+    /* Deep Forest Black - Professional & grounded */
+    --color-white: #FFFFFF;
+    --color-cream: #FFFEF7;
+    /* Warm Light Yellow Base */
+
+    /* Primary Brand: Olive Green */
+    --color-green-50: #F4F6F0;
+    --color-green-100: #E6EAD6;
+    --color-green-200: #C9D6A3;
+    --color-green-300: #ABC170;
+    --color-green-400: #8DAC3D;
+    --color-green-500: #749129;
+    --color-green-600: #587019;
+    /* Primary Action */
+    --color-green-700: #425413;
+    --color-green-800: #2C380D;
+    --color-green-900: #1A2118;
+    /* Same as Black */
+
+    /* Accent: Professional Yellow/Mustard */
+    --color-yellow-50: #FFFEF0;
+    --color-yellow-100: #FFF9C4;
+    --color-yellow-200: #FFF176;
+    --color-yellow-300: #FFEA3B;
+    --color-yellow-400: #FFD600;
+    --color-yellow-500: #FBC02D;
+    /* Primary Highlight */
+    --color-yellow-600: #F9A825;
+    --color-yellow-700: #F57F17;
+    --color-yellow-800: #E65100;
+    --color-yellow-900: #BF360C;
+
+    /* Neutrals - Replaced with Olive/Yellow Tints */
+    /* We override "gray" to ensure no blue/cool tones exist */
+    --color-gray-50: #F9FAF6;
+    /* Very light olive tint */
+    --color-gray-100: #F0F2EB;
+    --color-gray-200: #E1E6DA;
+    --color-gray-300: #C8CCBF;
+    --color-gray-400: #9EA396;
+    --color-gray-500: #757A6E;
+    --color-gray-600: #52574C;
+    --color-gray-700: #383D33;
+    --color-gray-800: #242920;
+    --color-gray-900: #1A2118;
+
+    /* Semantic Aliases */
+    --color-accent: var(--color-yellow-500);
+    --color-primary: var(--color-green-600);
+
+    /* Policy Page Compatibility Variables */
+    --color-cream: var(--color-yellow-50);
+    /* Force policy pages to use theme bg */
+    --color-yellow-light: var(--color-yellow-100);
+    --color-olive: var(--color-green-600);
+    --color-olive-dark: var(--color-green-800);
+    --color-olive-lighter: var(--color-green-200);
+    --color-primary-black: var(--color-black);
+
+    /* Shadows - Colored for depth */
+    /* Shadows - Soft Professional */
+    --shadow-neoblack: 0 10px 40px -10px rgba(0, 0, 0, 0.08);
+    /* Soft depth */
+    --shadow-neohover: 0 20px 40px -10px rgba(0, 0, 0, 0.12);
+    /* Softer float */
+    --shadow-neogreen: 0 10px 40px -10px rgba(88, 112, 25, 0.15);
+    /* Tinted glow */
+    --shadow-neoyellow: 0 10px 40px -10px rgba(251, 192, 45, 0.2);
+    /* Warm glow */
+}
+
+body,
+html {
+    overflow-x: hidden;
+    width: 100%;
+    min-height: 100vh;
+    background-color: var(--color-gray-50);
+    color: var(--color-black);
+    font-family: var(--font-outfit), sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--color-gray-100);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-gray-400);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-gray-600);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fadeIn {
+    animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-float {
+    animation: float 6s ease-in-out infinite;
+}
+
+.animate-slideUp {
+    animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+button,
+a {
+    cursor: pointer;
+}

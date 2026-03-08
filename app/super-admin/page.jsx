@@ -1,0 +1,259 @@
+
+"use client";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useAuth } from "../context/AuthContext";
+import { useRouter } from "next/navigation";
+import Loading from "../components/common/Loading";
+
+const SuperAdminPanel = () => {
+  const { token, userData } = useAuth();
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+  const [analytics, setAnalytics] = useState(null);
+  
+  const [showCreateAdmin, setShowCreateAdmin] = useState(false);
+  const [newAdmin, setNewAdmin] = useState({ username: '', email: '', password: '' });
+
+  useEffect(() => {
+    if (!token) return;
+    if (userData && userData.role !== 'superadmin') {
+       router.push('/admin'); // Redirect normal admins away
+       return;
+    }
+    fetchAnalytics();
+  }, [token, userData]);
+
+  /* ...existing fetchAnalytics... */
+  const fetchAnalytics = async () => {
+      try {
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/admin/super-stats`, { headers: { Authorization: `Bearer ${token}` } });
+      setAnalytics(res.data);
+    } catch (err) { console.error(err); }
+  };
+  
+  // ... (handleCreateAdmin logic)
+  const handleCreateAdmin = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/admin/create-admin`, newAdmin, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      alert('Admin created successfully!');
+      setShowCreateAdmin(false);
+      setNewAdmin({ username: '', email: '', password: '' });
+      fetchAnalytics();
+    } catch (error) {
+       console.error(error);
+       alert(error.response?.data?.message || 'Failed to create admin');
+    }
+  };
+
+
+  if(!token) return <Loading message="Authenticating..." />;
+
+  return (
+    <div className="min-h-screen bg-gray-50 p-6 md:p-12 font-sans relative">
+      <div className="max-w-7xl mx-auto relative z-10">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
+          <div>
+            <div className='inline-block px-3 py-1 rounded-full bg-indigo-900 text-white text-xs font-bold tracking-wide mb-4 shadow-sm'>
+              Super Admin Panel
+            </div>
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 tracking-tight">
+              Admin Dashboard
+            </h1>
+            <p className="text-lg text-gray-500 font-medium mt-2">Manage System Administrators & Overview.</p>
+          </div>
+          <div className="flex flex-wrap gap-3">
+             <button 
+               onClick={() => router.push('/super-admin/all-users')}
+               className="px-6 py-3 bg-white text-gray-700 font-bold rounded-full border border-gray-200 hover:bg-gray-50 hover:text-black hover:border-gray-300 transition-all shadow-sm"
+            >
+               👥 All Users
+            </button>
+             <button 
+               onClick={() => setShowCreateAdmin(true)}
+               className="px-6 py-3 bg-gray-900 text-white font-bold rounded-full hover:bg-black transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+            >
+               + Create Admin
+            </button>
+            <button 
+               onClick={() => router.push('/')}
+               className="px-6 py-3 bg-white text-gray-700 font-bold rounded-full border border-gray-200 hover:bg-gray-50 hover:text-black hover:border-gray-300 transition-all shadow-sm"
+            >
+               Home
+            </button>
+          </div>
+        </div>
+
+        {/* Analytics Section - Navigation Cards */}
+        {!analytics ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+                {[1, 2, 3, 4].map((i) => (
+                    <div key={i} className="bg-white p-8 rounded-[2rem] border border-gray-100 animate-pulse shadow-sm h-64">
+                        <div className="h-14 w-14 bg-gray-100 rounded-2xl mb-6"></div>
+                        <div className="h-4 bg-gray-100 rounded w-1/2 mb-4"></div>
+                        <div className="h-8 bg-gray-50 rounded w-1/4"></div>
+                    </div>
+                ))}
+            </div>
+        ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                {/* Total Users Card */}
+                <div onClick={() => router.push('/super-admin/users')} className="bg-white p-8 rounded-[2rem] border border-gray-100 cursor-pointer shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all group relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-full -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
+                    <div className="flex justify-between items-start mb-6 relative z-10">
+                        <div className="p-3 bg-blue-50 text-blue-600 rounded-2xl shadow-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-8 h-8">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
+                            </svg>
+                        </div>
+                        <span className="bg-gray-100 text-gray-600 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider group-hover:bg-blue-600 group-hover:text-white transition-colors">View All</span>
+                    </div>
+                    <p className="text-gray-400 text-xs font-bold uppercase tracking-widest relative z-10">Total Users</p>
+                    <h3 className="text-4xl font-bold text-gray-900 mt-2 relative z-10 tracking-tight">{analytics.totalUsers}</h3>
+                    <div className="flex gap-4 mt-6 text-xs font-bold relative z-10">
+                        <span className="text-green-600 cursor-pointer hover:underline flex items-center gap-1" onClick={(e) => { e.stopPropagation(); router.push('/super-admin/users?status=verified'); }}>
+                            <span className="w-2 h-2 rounded-full bg-green-500"></span>
+                            {analytics.totalVerified} Verified
+                        </span>
+                        <span className="text-yellow-600 cursor-pointer hover:underline flex items-center gap-1" onClick={(e) => { e.stopPropagation(); router.push('/super-admin/users?status=pending'); }}>
+                            <span className="w-2 h-2 rounded-full bg-yellow-500"></span>
+                            {analytics.totalUnverified} Pending
+                        </span>
+                    </div>
+                </div>
+
+                 {/* Admins Card */}
+                 <div onClick={() => router.push('/super-admin/admins')} className="bg-white p-8 rounded-[2rem] border border-gray-100 cursor-pointer shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all group relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-purple-50 rounded-full -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
+                    <div className="flex justify-between items-start mb-6 relative z-10">
+                        <div className="p-3 bg-purple-50 text-purple-600 rounded-2xl shadow-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-8 h-8">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>
+                        </div>
+                         <span className="bg-gray-100 text-gray-600 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider group-hover:bg-purple-600 group-hover:text-white transition-colors">Manage</span>
+                    </div>
+                    <p className="text-gray-400 text-xs font-bold uppercase tracking-widest relative z-10">System Admins</p>
+                    <h3 className="text-4xl font-bold text-gray-900 mt-2 relative z-10 tracking-tight">{analytics.totalAdmins}</h3>
+                     <p className="text-gray-500 text-xs font-medium mt-4 relative z-10">Manage admin accounts and permissions.</p>
+                </div>
+
+                {/* Pending Admins Card */}
+                <div onClick={() => router.push('/super-admin/admins?status=unverified')} className="bg-white p-8 rounded-[2rem] border border-gray-100 cursor-pointer shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all group relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-orange-50 rounded-full -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
+                    <div className="flex justify-between items-start mb-6 relative z-10">
+                        <div className="p-3 bg-orange-50 text-orange-600 rounded-2xl shadow-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-8 h-8">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+                            </svg>
+                        </div>
+                         {(analytics.totalUnverifiedAdmins > 0) && (
+                            <span className="bg-red-500 text-white text-[10px] font-bold px-3 py-1 rounded-full animate-pulse shadow-md border-2 border-white">! ACTION</span>
+                         )}
+                    </div>
+                    <p className="text-gray-400 text-xs font-bold uppercase tracking-widest relative z-10">Pending Admins</p>
+                    <h3 className="text-4xl font-bold text-gray-900 mt-2 relative z-10 tracking-tight">{analytics.totalUnverifiedAdmins || 0}</h3>
+                    <p className="text-gray-500 text-xs font-medium mt-4 relative z-10">Admins waiting for review.</p>
+                </div>
+                
+                {/* Active Today */}
+                <div className="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-lg group relative overflow-hidden">
+                     <div className="absolute top-0 right-0 w-32 h-32 bg-green-50 rounded-full -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
+                     <div className="flex justify-between items-start mb-6 relative z-10">
+                        <div className="p-3 bg-green-50 text-green-600 rounded-2xl shadow-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-8 h-8">
+                               <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <p className="text-gray-400 text-xs font-bold uppercase tracking-widest relative z-10">Active Today</p>
+                    <h3 className="text-4xl font-bold text-gray-900 mt-2 relative z-10 tracking-tight">{analytics.activeToday}</h3>
+                    <p className="text-gray-500 text-xs font-medium mt-4 relative z-10">Users active in the last 24h.</p>
+                </div>
+
+                {/* Deleted Accounts Card */}
+                <div onClick={() => router.push('/super-admin/deleted-accounts')} className="bg-white p-8 rounded-[2rem] border border-gray-100 cursor-pointer shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all group relative overflow-hidden">
+                     <div className="absolute top-0 right-0 w-32 h-32 bg-red-50 rounded-full -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
+                     <div className="flex justify-between items-start mb-6 relative z-10">
+                        <div className="p-3 bg-red-50 text-red-600 rounded-2xl shadow-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-8 h-8">
+                               <path strokeLinecap="round" strokeLinejoin="round" d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5m6 4.125 2.25 2.25m0 0 2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25 2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
+                            </svg>
+                        </div>
+                        <span className="bg-gray-100 text-gray-600 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider group-hover:bg-red-600 group-hover:text-white transition-colors">Audit</span>
+                    </div>
+                    <p className="text-gray-400 text-xs font-bold uppercase tracking-widest relative z-10">Deleted Accounts</p>
+                    <h3 className="text-4xl font-bold text-gray-900 mt-2 relative z-10 tracking-tight">{analytics.totalDeleted || 0}</h3>
+                    <p className="text-gray-500 text-xs font-medium mt-4 relative z-10">View archived accounts.</p>
+                </div>
+            </div>
+        )}
+
+      </div>
+
+       {/* Create Admin Modal */}
+       {showCreateAdmin && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-md p-4 transition-all">
+           <div className="bg-white rounded-[2rem] shadow-2xl max-w-md w-full p-8 md:p-10 transform scale-100 transition-transform">
+             <div className="flex justify-between items-center mb-8">
+                <div>
+                    <h2 className="text-2xl font-bold text-gray-900 tracking-tight">Create Admin</h2>
+                    <p className="text-gray-500 text-xs font-medium mt-1">Add a new administrator to the system.</p>
+                </div>
+                <button onClick={() => setShowCreateAdmin(false)} className="bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-black w-10 h-10 rounded-full flex items-center justify-center transition-colors">
+                  ✕
+                </button>
+             </div>
+             <form onSubmit={handleCreateAdmin} className="space-y-6">
+               <div>
+                 <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Username</label>
+                 <input 
+                   type="text" 
+                   required
+                   value={newAdmin.username}
+                   onChange={e => setNewAdmin({...newAdmin, username: e.target.value})}
+                   className="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-gray-900 focus:ring-2 focus:ring-black/5 focus:border-gray-300 outline-none font-medium transition-all"
+                   placeholder="e.g. admin_jane"
+                 />
+               </div>
+               <div>
+                 <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Email</label>
+                 <input 
+                   type="email" 
+                   required
+                   value={newAdmin.email}
+                   onChange={e => setNewAdmin({...newAdmin, email: e.target.value})}
+                   className="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-gray-900 focus:ring-2 focus:ring-black/5 focus:border-gray-300 outline-none font-medium transition-all"
+                   placeholder="admin@example.com"
+                 />
+               </div>
+               <div>
+                 <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Password</label>
+                 <input 
+                   type="password" 
+                   required
+                   value={newAdmin.password}
+                   onChange={e => setNewAdmin({...newAdmin, password: e.target.value})}
+                   className="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-gray-900 focus:ring-2 focus:ring-black/5 focus:border-gray-300 outline-none font-medium transition-all"
+                   placeholder="••••••••"
+                 />
+               </div>
+               <button 
+                 type="submit" 
+                 className="w-full py-4 bg-gray-900 text-white font-bold rounded-2xl hover:bg-black transition-all shadow-xl hover:-translate-y-0.5 mt-2"
+               >
+                 Create Admin Account
+               </button>
+             </form>
+           </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default SuperAdminPanel;
