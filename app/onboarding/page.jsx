@@ -116,7 +116,7 @@ const OnboardingPage = () => {
 
     const checkOnboardingStatus = async () => {
         try {
-            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/profile/check`, {
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/profile/check`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             
@@ -199,7 +199,7 @@ const OnboardingPage = () => {
             if (formData.idProofBack) data.append('idProofBack', formData.idProofBack);
 
             // Submit as basic user (not companion)
-            await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/profile/onboard-basic`, data, {
+            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/profile/onboard-basic`, data, {
                 headers: { 
                     Authorization: `Bearer ${token}`
                 }
@@ -297,7 +297,7 @@ const OnboardingPage = () => {
             if (formData.idProofFront) data.append('idProofFront', formData.idProofFront);
             if (formData.idProofBack) data.append('idProofBack', formData.idProofBack);
 
-            await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/profile/onboard-companion`, data, {
+            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/profile/onboard-companion`, data, {
                 headers: { 
                     Authorization: `Bearer ${token}`
                 }

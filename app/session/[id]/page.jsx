@@ -21,7 +21,7 @@ export default function SessionPage() {
 
         const fetchBooking = async () => {
             try {
-                 const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/bookings/${id}`, {
+                 const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/bookings/${id}`, {
                      headers: { Authorization: `Bearer ${token}` }
                  });
                  setBooking(res.data);

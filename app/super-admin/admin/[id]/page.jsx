@@ -25,7 +25,7 @@ const AdminDetailsPage = ({ params }) => {
   const fetchAdminDetails = async () => {
     try {
       // Re-using the getUserDetails endpoint which now supports admins too
-      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/admin/user/${id}`, {
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/user/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setAdmin(res.data);
@@ -40,7 +40,7 @@ const AdminDetailsPage = ({ params }) => {
   const handleVerify = async (status) => {
     try {
       await axios.put(
-        `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/admin/verify-admin/${id}`, 
+        `${process.env.NEXT_PUBLIC_API_URL}/api/admin/verify-admin/${id}`, 
         { status }, 
         { headers: { Authorization: `Bearer ${token}` } }
       );

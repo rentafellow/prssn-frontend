@@ -34,7 +34,7 @@ const AdminPanel = () => {
   const fetchUnverifiedUsers = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/admin/unverified`, {
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/unverified`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setUsers(res.data);
@@ -47,7 +47,7 @@ const AdminPanel = () => {
 
   const fetchStats = async () => {
     try {
-      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/admin/stats`, {
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/stats`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setStats(res.data);
@@ -59,7 +59,7 @@ const AdminPanel = () => {
   const handleVerify = async (userId, status) => {
     try {
       await axios.put(
-        `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/admin/verify/${userId}`, 
+        `${process.env.NEXT_PUBLIC_API_URL}/api/admin/verify/${userId}`, 
         { status }, 
         { headers: { Authorization: `Bearer ${token}` } }
       );

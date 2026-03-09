@@ -31,7 +31,7 @@ const UsersList = () => {
     const fetchAllUsers = async () => {
         try {
             setLoading(true);
-            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/admin/all-users`, {
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/all-users`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setUsers(res.data);
@@ -64,7 +64,7 @@ const UsersList = () => {
 
     const executeDeleteUser = async (userId) => {
         try {
-            await axios.delete(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/admin/user/${userId}`, {
+            await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/user/${userId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setNotification({

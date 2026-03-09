@@ -41,11 +41,11 @@ const FellowProfile = () => {
                 // Determine API endpoint - handle generic fetch if specific by ID fails/not impl
                 // Here assuming /api/companions returns array, we filter. Ideal is /api/companions/:id
                 try {
-                     const resSpecific = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/companions/${id}`);
+                     const resSpecific = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/companions/${id}`);
                      setFellow(resSpecific.data);
                 } catch (e) {
                      // Fallback to list fetch
-                     const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/companions`);
+                     const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/companions`);
                      const found = res.data.find(f => f.id === id || f._id === id);
                      setFellow(found);
                 }
@@ -99,7 +99,7 @@ const FellowProfile = () => {
                 return;
             }
 
-            await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/bookings/request`, {
+            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/bookings/request`, {
                 companionId: fellowId,
                 scheduledDate: bookingDate,
                 startTime: bookingTime,

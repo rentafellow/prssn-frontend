@@ -38,7 +38,7 @@ const AdminOnboardingPage = () => {
 
     const checkStatus = async () => {
         try {
-            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/profile/check`, {
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/profile/check`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (res.data.hasProfile) {
@@ -73,7 +73,7 @@ const AdminOnboardingPage = () => {
         data.append('adminVerificationDocument', formData.adminVerificationDocument);
 
         try {
-            await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/profile/admin-onboard`, data, {
+            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/profile/admin-onboard`, data, {
                 headers: { 
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data'

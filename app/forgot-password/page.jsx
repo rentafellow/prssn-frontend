@@ -17,7 +17,7 @@ const ForgotPassword = () => {
         setMessage(null);
 
         try {
-            await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/auth/forgot-password`, { email });
+            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/forgot-password`, { email });
             setMessage({ type: "success", title: "OTP Sent", message: "Check your email for the password reset code." });
             setTimeout(() => {
                 // Redirect to Reset Password page with email pre-filled

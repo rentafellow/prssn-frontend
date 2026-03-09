@@ -26,7 +26,7 @@ const VerifyEmailContent = () => {
         setMessage(null);
 
         try {
-            await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/auth/verify-email`, {
+            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/verify-email`, {
                 email,
                 otp
             });
@@ -52,7 +52,7 @@ const VerifyEmailContent = () => {
         }
         setLoading(true);
         try {
-            await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/auth/resend-otp`, { email });
+            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/resend-otp`, { email });
             setMessage({ type: "success", title: "OTP Sent", message: "A new OTP has been sent to your email." });
         } catch (error) {
             setMessage({ 

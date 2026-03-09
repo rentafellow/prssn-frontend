@@ -16,7 +16,7 @@ const Chat = ({ bookingId }) => {
         if (!token || !bookingId) return;
 
         // Initialize socket
-        const socketUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+        const socketUrl = process.env.NEXT_PUBLIC_API_URL;
         const newSocket = io(socketUrl, {
             auth: { token },
             reconnection: true,

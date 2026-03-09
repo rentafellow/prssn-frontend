@@ -26,9 +26,9 @@ const MyBookings = () => {
             try {
                 let url = '';
                 if (userData?.role === 'companion') {
-                    url = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/bookings/incoming-requests`;
+                    url = `${process.env.NEXT_PUBLIC_API_URL}/api/bookings/incoming-requests`;
                 } else {
-                    url = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/bookings/my-requests`;
+                    url = `${process.env.NEXT_PUBLIC_API_URL}/api/bookings/my-requests`;
                 }
 
                 if (url) {
@@ -51,7 +51,7 @@ const MyBookings = () => {
 
     const handleAction = async (bookingId, newStatus) => {
         try {
-            await axios.put(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/bookings/${bookingId}/status`, 
+            await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/bookings/${bookingId}/status`, 
             { status: newStatus },
             { headers: { Authorization: `Bearer ${token}` } });
             

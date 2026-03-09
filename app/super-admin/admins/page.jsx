@@ -31,7 +31,7 @@ const AdminsList = () => {
     const fetchAdmins = async () => {
         try {
             setLoading(true);
-            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/admin/admins`, {
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/admins`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setAdmins(res.data);
@@ -59,7 +59,7 @@ const AdminsList = () => {
                 updateData.password = editForm.password;
             }
 
-            await axios.put(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/admin/admin/${editingAdmin.id}`, updateData, {
+            await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/admin/${editingAdmin.id}`, updateData, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             alert("Admin updated successfully!");
@@ -77,7 +77,7 @@ const AdminsList = () => {
         if (!confirm(`Are you sure you want to delete admin "${adminUsername}"? This action cannot be undone.`)) return;
         
         try {
-            await axios.delete(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/admin/admin/${adminId}`, {
+            await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/admin/${adminId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             alert("Admin deleted successfully");
@@ -90,7 +90,7 @@ const AdminsList = () => {
 
     const handleVerifyAdmin = async (adminId, status) => {
         try {
-            await axios.put(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/admin/verify-admin/${adminId}`, 
+            await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/verify-admin/${adminId}`, 
                 { status },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -105,7 +105,7 @@ const AdminsList = () => {
     const handleCreateAdmin = async (e) => {
         e.preventDefault();
         try {
-            await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/admin/create-admin`, newAdmin, {
+            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/create-admin`, newAdmin, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             alert('Admin created successfully!');

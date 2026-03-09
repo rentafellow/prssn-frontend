@@ -18,7 +18,7 @@ const nextConfig = {
       },
       {
         protocol: 'http',
-        hostname: 'localhost',
+        hostname: 'prssn-backend.onrender.com',
         port: '5000',
         pathname: '/uploads/**',
       },

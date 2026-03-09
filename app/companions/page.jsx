@@ -54,7 +54,7 @@ const CompanionsContent = () => {
     const fetchCompanions = async () => {
         try {
             // Use cachedFetch instead of axios
-            const data = await cachedFetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/companions`);
+            const data = await cachedFetch(`${process.env.NEXT_PUBLIC_API_URL}/api/companions`);
             setCompanions(data);
         } catch (error) {
             // Silently handle error - user will see empty state

@@ -98,12 +98,12 @@ const Login = () => {
           formData.append("verificationImage", verificationImage);
         }
 
-        await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/auth/register`, formData);
+        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`, formData);
         
         // Pass email to verification page
         router.push(`/verify-email?email=${encodeURIComponent(email)}`);
       } else {
-        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/auth/login`, { email, password });
+        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, { email, password });
         const data = response.data;
         if (data.token) {
           login(data.token, data.user);

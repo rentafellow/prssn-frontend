@@ -27,7 +27,7 @@ const SuperAdminPanel = () => {
   /* ...existing fetchAnalytics... */
   const fetchAnalytics = async () => {
       try {
-      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/admin/super-stats`, { headers: { Authorization: `Bearer ${token}` } });
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/super-stats`, { headers: { Authorization: `Bearer ${token}` } });
       setAnalytics(res.data);
     } catch (err) { console.error(err); }
   };
@@ -36,7 +36,7 @@ const SuperAdminPanel = () => {
   const handleCreateAdmin = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/admin/create-admin`, newAdmin, {
+      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/create-admin`, newAdmin, {
         headers: { Authorization: `Bearer ${token}` }
       });
       alert('Admin created successfully!');

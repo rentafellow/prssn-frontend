@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }) => {
 
     const fetchProfile = async (authToken, fallbackUser) => {
         try {
-            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/profile`, {
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/profile`, {
                 headers: { 'Authorization': `Bearer ${authToken}` }
             });
             // Merge basic user data with profile data (isVerified, etc)
@@ -89,7 +89,7 @@ export const AuthProvider = ({ children }) => {
 
         // 2. Fetch latest profile in background and sync
         try {
-            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/profile`, {
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/profile`, {
                 headers: { 'Authorization': `Bearer ${newToken}` }
             });
             const fullUserData = { ...user, ...res.data };

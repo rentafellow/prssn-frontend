@@ -27,7 +27,7 @@ const AllUsersPage = () => {
     const fetchAllUsers = async () => {
         try {
             setLoading(true);
-            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/admin/all-users`, {
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/all-users`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setUsers(res.data);

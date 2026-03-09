@@ -25,7 +25,7 @@ const UserDetailsPage = ({ params }) => {
 
   const fetchUserDetails = async () => {
     try {
-      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/admin/user/${id}`, {
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/user/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setUser(res.data);
@@ -42,7 +42,7 @@ const UserDetailsPage = ({ params }) => {
   const handleVerify = async (status) => {
     try {
       await axios.put(
-        `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/admin/verify/${id}`, 
+        `${process.env.NEXT_PUBLIC_API_URL}/api/admin/verify/${id}`, 
         { status }, 
         { headers: { Authorization: `Bearer ${token}` } }
       );

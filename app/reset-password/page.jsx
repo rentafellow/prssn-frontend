@@ -35,7 +35,7 @@ const ResetPasswordContent = () => {
         setMessage(null);
 
         try {
-            await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/auth/reset-password`, {
+            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/reset-password`, {
                 email,
                 otp,
                 newPassword

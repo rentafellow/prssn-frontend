@@ -20,7 +20,7 @@ export default function Home() {
 
   const checkProfileStatus = async () => {
     try {
-      await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/profile/check`, {
+      await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/profile/check`, {
         headers: { Authorization: `Bearer ${token}` }
       });
     } catch (err) {

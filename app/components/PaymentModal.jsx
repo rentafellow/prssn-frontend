@@ -37,7 +37,7 @@ const CheckoutForm = ({ clientSecret, bookingId, onSuccess, onError }) => {
             // Payment succeeded, now verify with backend
             try {
                 await axios.post(
-                    `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/payments/verify-payment`,
+                    `${process.env.NEXT_PUBLIC_API_URL}/api/payments/verify-payment`,
                     { 
                         paymentIntentId: result.paymentIntent.id,
                         bookingId: bookingId
@@ -79,7 +79,7 @@ const PaymentModal = ({ booking, onClose, onSuccess }) => {
         const fetchClientSecret = async () => {
             try {
                 const res = await axios.post(
-                    `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/payments/create-intent`,
+                    `${process.env.NEXT_PUBLIC_API_URL}/api/payments/create-intent`,
                     { bookingId: booking._id },
                     { headers: { Authorization: `Bearer ${token}` } }
                 );
