@@ -47,6 +47,7 @@ const MyBookings = () => {
         if (userData) {
             fetchBookings();
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [userData, token]);
 
     const handleAction = async (bookingId, newStatus) => {
@@ -63,7 +64,7 @@ const MyBookings = () => {
         }
     };
     
-    const handlePaymentSuccess = (paymentIntent) => {
+    const handlePaymentSuccess = () => {
         // Update local state to paid
         const bookingId = selectedBooking?._id;
         if (bookingId) {
@@ -161,6 +162,7 @@ const MyBookings = () => {
                            {/* Avatar Section */}
                            <div className="flex-shrink-0">
                                <div className="w-20 h-20 md:w-24 md:h-24 rounded-3xl overflow-hidden bg-gray-50 shadow-inner">
+                                   {/* eslint-disable-next-line @next/next/no-img-element */}
                                    <img 
                                         src={userData.role === 'companion' ? booking.requesterId?.profilePhotoUrl : booking.companionId?.profilePhotoUrl} 
                                         alt="Avatar"
@@ -194,7 +196,7 @@ const MyBookings = () => {
                                {booking.message && (
                                    <div className="mb-6 relative">
                                        <p className="text-sm font-medium text-gray-600 italic bg-gray-50 p-4 rounded-2xl border border-gray-100">
-                                           "{booking.message}"
+                                            &ldquo;{booking.message}&rdquo;
                                        </p>
                                    </div>
                                )}

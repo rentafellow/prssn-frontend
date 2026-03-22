@@ -1,0 +1,130 @@
+﻿
+[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90mA:/FreeLance Projects/RentAFellow/frontend[39m
+
+node.exe : 
+[90mstderr[2m | src/
+tests/context/AuthCont
+ext.test.jsx[2m > [2
+2m[2mAuthContext[2m 
+> [22m[2mhandles 
+login properly
+At C:\Program Files\no
+dejs\npx.ps1:29 char:3
++   & $NODE_EXE 
+$NPX_CLI_JS $args
++   ~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~
+    + CategoryInfo    
+          : NotSpeci  
+  fied: ([90mstder   
+ r[2m... login pr    
+operly:String) []    
+, RemoteException
+    + FullyQualifiedE 
+   rrorId : NativeCo  
+  mmandError
+ 
+[22m[39mAn update 
+to AuthProvider 
+inside a test was not 
+wrapped in act(...).
+
+When testing, code 
+that causes React 
+state updates should 
+be wrapped into 
+act(...):
+
+act(() => {
+  /* fire events that 
+update state */
+});
+/* assert on the 
+output */
+
+This ensures that 
+you're testing the 
+behavior the user 
+would see in the 
+browser. Learn more 
+at https://react.dev/l
+ink/wrap-tests-with-ac
+t
+
+ [32mΓ£ô[39m src/tests/context/AuthContext.test.jsx[2m > [22mAuthContext[2m > [22mprovides default values[32m 25[2mms[22m[39m
+ [32mΓ£ô[39m src/tests/context/AuthContext.test.jsx[2m > [22mAuthContext[2m > [22mloads token and userData from localStorage on mount[32m 9[2mms[22m[39m
+ [32mΓ£ô[39m src/tests/context/AuthContext.test.jsx[2m > [22mAuthContext[2m > [22mhandles login properly[32m 7[2mms[22m[39m
+ [31m├ù[39m src/tests/context/AuthContext.test.jsx[2m > [22mAuthContext[2m > [22mhandles logout properly[32m 10[2mms[22m[39m
+[31m   ΓåÆ expected '{"username":"storeduser","is_verifiedΓÇª' to be null[39m
+
+[31mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ
+»ΓÄ»[39m[1m[41m 
+Failed Tests 1 [49m[
+22m[31mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ
+»ΓÄ»ΓÄ»[39m
+
+[41m[1m FAIL 
+[22m[49m src/tests/c
+ontext/AuthContext.tes
+t.jsx[2m > 
+[22mAuthContext[2m 
+> [22mhandles logout 
+properly
+[31m[1mAssertionErro
+r[22m: expected '{"us
+ername":"storeduser","
+is_verifiedΓÇª' to be 
+null[39m
+
+[32m- Expected:[39m
+null
+
+[31m+ Received:[39m
+"{\"username\":\"store
+duser\",\"is_verified\
+":true}"
+
+[36m [2mΓ¥»[22m src
+/tests/context/AuthCon
+text.test.jsx:[2m112:
+53[22m[39m
+    [90m110|[39m    
+ [90m// LocalStorage 
+should clear[39m
+    [90m111|[39m    
+ [34mexpect[39m(wind
+ow[33m.[39mlocalStor
+age[33m.[39m[34mget
+Item[39m([32m'token'
+[39m))[33m.[39m[34
+mtoBeNull[39m()[33m;
+[39m
+    [90m112|[39m    
+ [34mexpect[39m(wind
+ow[33m.[39mlocalStor
+age[33m.[39m[34mget
+Item[39m([32m'userDa
+ta'[39m))[33m.[39m
+[34mtoBeNull[39m()[3
+3m;[39m
+    [90m   |[39m    
+                      
+                      
+     [31m^[39m
+    [90m113|[39m   
+})[33m;[39m
+    [90m114|[39m 
+})[33m;[39m
+
+[31m[2mΓÄ»ΓÄ»ΓÄ»ΓÄ»Γ
+Ä»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ
+»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[1/1]ΓÄ
+»[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m3 passed[39m[22m[90m (4)[39m
+[2m   Start at [22m 14:35:56
+[2m   Duration [22m 1.88s[2m (transform 113ms, setup 212ms, import 182ms, tests 53ms, environment 1.18s)[22m
+

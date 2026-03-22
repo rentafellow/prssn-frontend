@@ -49,6 +49,7 @@ const CompanionsContent = () => {
         if (mode) {
            fetchCompanions();
         }
+     
     }, [mode]);
 
     const fetchCompanions = async () => {
@@ -142,7 +143,7 @@ const CompanionsContent = () => {
                 </h1>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl relative z-10">
                     <button onClick={() => router.push('/companions?mode=dont-go-alone')} className="p-10 bg-white border border-gray-100 rounded-3xl hover:shadow-xl hover:-translate-y-1 transition-all text-left group shadow-sm">
-                        <span className="block text-2xl font-bold mb-3 text-gray-900 group-hover:text-green-700 transition-colors">Don't Go Alone</span>
+                        <span className="block text-2xl font-bold mb-3 text-gray-900 group-hover:text-green-700 transition-colors">Don&apos;t Go Alone</span>
                         <p className="text-gray-500 font-medium text-lg leading-relaxed">For events, cafés, waiting rooms. Just presence.</p>
                     </button>
                     <button onClick={() => router.push('/companions?mode=sit-with-me')} className="p-10 bg-white border border-gray-100 rounded-3xl hover:shadow-xl hover:-translate-y-1 transition-all text-left group shadow-sm">
@@ -366,6 +367,7 @@ const CompanionCard = ({ companion }) => {
                 {/* Image Section */}
                 <div className="w-full aspect-[4/3] relative overflow-hidden bg-gray-50">
                     {imageUrl ? (
+                        /* eslint-disable-next-line @next/next/no-img-element */
                         <img 
                             src={imageUrl} 
                             alt={companion.fullName} 

@@ -21,6 +21,7 @@ const UserDetailsPage = ({ params }) => {
        return;
     }
     fetchUserDetails();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, id]);
 
   const fetchUserDetails = async () => {
@@ -97,6 +98,7 @@ const UserDetailsPage = ({ params }) => {
                             <div className="bg-gray-50 rounded-2xl p-3 border border-gray-100 shadow-inner group">
                                 {user.profile?.idProofFrontUrl || user.profile?.front_aadhar_photo ? (
                                     <div className="relative overflow-hidden rounded-xl">
+                                        {/* eslint-disable-next-line @next/next/no-img-element */}
                                         <img 
                                             src={user.profile.idProofFrontUrl || user.profile.front_aadhar_photo} 
                                             alt="Front ID" 
@@ -120,6 +122,7 @@ const UserDetailsPage = ({ params }) => {
                             <div className="bg-gray-50 rounded-2xl p-3 border border-gray-100 shadow-inner group">
                                 {user.profile?.idProofBackUrl || user.profile?.back_aadhar_photo ? (
                                     <div className="relative overflow-hidden rounded-xl">
+                                        {/* eslint-disable-next-line @next/next/no-img-element */}
                                         <img 
                                             src={user.profile.idProofBackUrl || user.profile.back_aadhar_photo} 
                                             alt="Back ID" 
@@ -152,6 +155,7 @@ const UserDetailsPage = ({ params }) => {
                             <div className="flex items-center gap-6 pb-8 border-b border-gray-50">
                                 {user.profilePhotoUrl || user.profile_photo_url ? (
                                     <div className="relative group">
+                                        {/* eslint-disable-next-line @next/next/no-img-element */}
                                         <img 
                                             src={user.profilePhotoUrl || user.profile_photo_url} 
                                             alt="Profile" 
@@ -194,7 +198,7 @@ const UserDetailsPage = ({ params }) => {
                                 {user.profile?.description && (
                                     <div className="p-5 rounded-2xl border border-gray-100 bg-gray-50/50 hover:bg-gray-50 transition-colors">
                                         <label className="text-[10px] text-gray-400 uppercase font-bold tracking-widest block mb-2">Description</label>
-                                        <p className="font-medium text-gray-700 leading-relaxed italic">"{user.profile.description}"</p>
+                                        <p className="font-medium text-gray-700 leading-relaxed italic">&ldquo;{user.profile.description}&rdquo;</p>
                                     </div>
                                 )}
 
@@ -274,11 +278,11 @@ const UserDetailsPage = ({ params }) => {
               >
                 Close ✕
               </button>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img 
                 src={enlargedImage} 
                 alt="Enlarged view" 
-                className="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl"
-                onClick={(e) => e.stopPropagation()}
+                className="w-full max-h-[90vh] object-contain rounded-2xl shadow-2xl"
               />
             </div>
           </div>

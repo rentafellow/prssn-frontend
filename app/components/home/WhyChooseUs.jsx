@@ -78,7 +78,7 @@ export default function WhyChooseUs() {
                 <div className="h-2 w-full bg-blue-500 mt-2"></div>
             </div>
             <p className="text-xl font-bold text-gray-700 max-w-md text-center md:text-left">
-                We're building the <span className="text-blue-600 underline decoration-wavy decoration-2">safest</span> place to find your next activity partner.
+                We&apos;re building the <span className="text-blue-600 underline decoration-wavy decoration-2">safest</span> place to find your next activity partner.
             </p>
         </div>
 

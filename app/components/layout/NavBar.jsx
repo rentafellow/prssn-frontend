@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 import { useAuth } from '../../context/AuthContext'
 
@@ -83,6 +82,7 @@ const NavBar = () => {
                         <span className="text-xs font-bold text-white uppercase tracking-wider">{userData?.username || 'User'}</span>
                     </div>
                     <div className="relative">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img 
                             className='w-10 h-10 rounded-full object-cover border-2 border-white/20 shadow-md group-hover:border-green-500 transition-colors' 
                             src={userData?.profilePhotoUrl || "/profile_pic.png"} 
@@ -179,18 +179,74 @@ const NavBar = () => {
                     </svg>
                 </button>
             </div>
-            <ul className="flex flex-col p-4 gap-2">
+            <ul className="flex flex-col p-4 gap-2 font-medium">
                 {links.map(link => (
                     <li key={link.path}>
                         <Link 
                             href={link.path} 
                             onClick={() => setIsMenuOpen(false)}
-                            className={`block px-5 py-3 rounded-xl font-medium transition-all ${pathname === link.path ? "bg-black text-white shadow-lg" : "text-gray-600 hover:bg-gray-50 hover:text-black"}`}
+                            className={`block px-5 py-3 rounded-xl transition-all ${pathname === link.path ? "bg-black text-white shadow-lg" : "text-gray-600 hover:bg-gray-50 hover:text-black"}`}
                         >
                             {link.name}
                         </Link>
                     </li>
                 ))}
+
+                {token && (
+                    <>
+                        <div className="h-px bg-gray-100 my-2 mx-2"></div>
+                        <li className="px-5 py-1 text-xs font-bold text-gray-400 uppercase tracking-widest">Account</li>
+                        
+                        {userData?.is_verified || userData?.role === 'superadmin' ? (
+                            <>
+                                {userData?.role !== 'admin' && userData?.role !== 'superadmin' && (
+                                    <>
+                                        <li>
+                                            <Link href="/profile" onClick={() => setIsMenuOpen(false)} className="block px-5 py-3 rounded-xl transition-all text-gray-600 hover:bg-green-50 hover:text-green-700">My Profile</Link>
+                                        </li>
+                                        <li>
+                                            <Link href="/my-bookings" onClick={() => setIsMenuOpen(false)} className="block px-5 py-3 rounded-xl transition-all text-gray-600 hover:bg-green-50 hover:text-green-700">My Bookings</Link>
+                                        </li>
+                                    </>
+                                )}
+                                {userData?.role === 'admin' && (
+                                    <li>
+                                        <Link href="/admin" onClick={() => setIsMenuOpen(false)} className="block px-5 py-3 rounded-xl transition-all text-gray-900 hover:bg-gray-50">Admin Dashboard</Link>
+                                    </li>
+                                )}
+                                {userData?.role === 'superadmin' && (
+                                    <li>
+                                        <Link href="/super-admin" onClick={() => setIsMenuOpen(false)} className="block px-5 py-3 rounded-xl transition-all text-gray-900 hover:bg-gray-50">Super Admin Dashboard</Link>
+                                    </li>
+                                )}
+                            </>
+                        ) : (
+                            <>
+                                {userData?.role === 'admin' ? (
+                                    <li>
+                                        <Link href="/admin/onboarding" onClick={() => setIsMenuOpen(false)} className="block px-5 py-3 rounded-xl font-bold transition-all text-gray-900 hover:bg-yellow-50 flex items-center gap-2">Admin Onboarding →</Link>
+                                    </li>
+                                ) : (
+                                    <li>
+                                        <Link href="/onboarding" onClick={() => setIsMenuOpen(false)} className="block px-5 py-3 rounded-xl font-bold transition-all text-gray-900 hover:bg-yellow-50 flex items-center gap-2">Complete Onboarding →</Link>
+                                    </li>
+                                )}
+                            </>
+                        )}
+                        
+                        <li>
+                            <button onClick={() => { logout(); setIsMenuOpen(false); }} className="w-full text-left px-5 py-3 rounded-xl font-bold transition-all text-red-500 hover:bg-red-50 hover:text-red-600 whitespace-nowrap">Logout</button>
+                        </li>
+                    </>
+                )}
+                {!token && (
+                    <>
+                        <div className="h-px bg-gray-100 my-2 mx-2"></div>
+                        <li>
+                            <Link href="/login" onClick={() => setIsMenuOpen(false)} className="block px-5 py-3 rounded-xl font-bold text-center transition-all bg-black text-white hover:bg-gray-800 shadow-md">Be a Presence</Link>
+                        </li>
+                    </>
+                )}
             </ul>
         </div>
     </div>

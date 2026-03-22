@@ -43,7 +43,7 @@ const FellowProfile = () => {
                 try {
                      const resSpecific = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/companions/${id}`);
                      setFellow(resSpecific.data);
-                } catch (e) {
+                } catch {
                      // Fallback to list fetch
                      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/companions`);
                      const found = res.data.find(f => f.id === id || f._id === id);
@@ -140,7 +140,8 @@ const FellowProfile = () => {
                      <div className="bg-white rounded-[2.5rem] p-3 shadow-xl shadow-gray-200/50 mb-6">
                         <div className="aspect-[4/5] rounded-[2rem] overflow-hidden relative bg-gray-100">
                              {fellow.profilePhoto ? (
-                                <img src={fellow.profilePhoto} className="w-full h-full object-cover" />
+                                /* eslint-disable-next-line @next/next/no-img-element */
+                                <img src={fellow.profilePhoto} alt="Fellow Profile" className="w-full h-full object-cover" />
                              ) : (
                                 <div className="w-full h-full flex items-center justify-center text-6xl text-gray-200">👤</div>
                              )}
@@ -177,7 +178,7 @@ const FellowProfile = () => {
                             </p>
 
                             <div className="prose prose-lg text-gray-600 mb-10 leading-relaxed">
-                                "{fellow.description || "I am here simply to be present. No expectations."}"
+                                &ldquo;{fellow.description || "I am here simply to be present. No expectations."}&rdquo;
                             </div>
 
                             {/* Tags */}

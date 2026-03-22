@@ -11,26 +11,6 @@ export const AuthProvider = ({ children }) => {
     const [userData, setUserData] = useState(null);
     const router = useRouter();
 
-    useEffect(() => {
-        // Check for token in localStorage on mount
-        const storedToken = localStorage.getItem('token');
-        const storedUserData = localStorage.getItem('userData');
-        
-        if (storedToken) {
-            setToken(storedToken);
-            // Fetch latest profile data to get verification status
-            fetchProfile(storedToken, storedUserData ? JSON.parse(storedUserData) : null);
-        }
-        
-        if (storedUserData) {
-            try {
-                setUserData(JSON.parse(storedUserData));
-            } catch (e) {
-                console.error("Failed to parse user data", e);
-            }
-        }
-    }, []);
-
     const logout = () => {
         setToken(null);
         setUserData(null);
@@ -66,6 +46,27 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    useEffect(() => {
+        // Check for token in localStorage on mount
+        const storedToken = localStorage.getItem('token');
+        const storedUserData = localStorage.getItem('userData');
+        
+        if (storedToken) {
+            setToken(storedToken);
+            // Fetch latest profile data to get verification status
+            fetchProfile(storedToken, storedUserData ? JSON.parse(storedUserData) : null);
+        }
+        
+        if (storedUserData) {
+            try {
+                setUserData(JSON.parse(storedUserData));
+            } catch (e) {
+                console.error("Failed to parse user data", e);
+            }
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     const login = async (newToken, user) => {
         setToken(newToken);
         setUserData(user);
@@ -100,7 +101,7 @@ export const AuthProvider = ({ children }) => {
             if (!user?.is_verified && fullUserData.is_verified && fullUserData.role === 'admin') {
                 router.push('/admin');
             }
-        } catch (err) {
+        } catch {
             // Background profile check failed, silent error
         }
     };

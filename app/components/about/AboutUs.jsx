@@ -47,7 +47,7 @@ const AboutUs = () => {
                     </h2>
 
                     <p className='text-xl text-gray-500 font-medium leading-relaxed border-l-4 border-green-200 pl-6'>
-                        prsnn. isn't just about finding someone—it's about finding 
+                        prsnn. isn&apos;t just about finding someone—it&apos;s about finding 
                         <span className='font-bold text-gray-900 mx-1'>your people.</span> 
                         We bridge the gap between doing it alone and sharing the moment.
                     </p>

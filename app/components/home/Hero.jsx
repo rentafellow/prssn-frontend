@@ -16,10 +16,10 @@ const Hero = () => {
         <div className='absolute top-[-20%] left-[-10%] w-[800px] h-[800px] bg-green-200/20 rounded-full mix-blend-multiply filter blur-[100px] animate-float opacity-40 pointer-events-none'></div>
         <div className='absolute top-[20%] right-[-10%] w-[600px] h-[600px] bg-yellow-200/20 rounded-full mix-blend-multiply filter blur-[120px] animate-float opacity-40 pointer-events-none' style={{animationDelay: '4s'}}></div>
         
-        <div className='max-w-7xl mx-auto px-6 pt-6 pb-20 md:pt-12 md:pb-28 flex flex-col md:flex-row items-center gap-8 md:gap-12 relative z-10'>
+        <div className='max-w-7xl mx-auto px-6 pt-6 pb-12 md:pt-12 md:pb-28 flex flex-col md:flex-row items-center gap-0 md:gap-12 relative z-10'>
             
             {/* LEFT: Text Content */}
-            <div className='flex flex-col gap-8 w-full md:w-1/2 text-center md:text-left items-center md:items-start'>
+            <div className='flex flex-col gap-8 w-full md:w-1/2 text-center md:text-left items-center md:items-start mt-4 md:mt-0'>
                 
                 {/* Badge */}
                 <div className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-200/60 rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-md transition-shadow cursor-default animate-fadeIn">
@@ -82,7 +82,7 @@ const Hero = () => {
             </div>
 
             {/* RIGHT: Visual Collage (The Vibe Grid) */}
-            <div className='w-full md:w-1/2 relative h-[600px] flex items-center justify-center perspective-1000'>
+            <div className='w-full md:w-1/2 relative h-[450px] md:h-[600px] flex items-center justify-center perspective-1000'>
                 
                 {/* Glowing Aura */}
                 <div className="absolute inset-0 bg-gradient-to-tr from-green-100/40 via-yellow-50/40 to-transparent rounded-full filter blur-3xl opacity-60 transform translate-x-10 animate-pulse" style={{animationDuration: '4s'}}></div>

@@ -1,7 +1,6 @@
 "use client";
 import { useAuth } from './context/AuthContext';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import axios from 'axios';
 import Hero from './components/home/Hero';
 import RealityCheck from './components/home/RealityCheck';
@@ -10,15 +9,8 @@ import Testimonials from './components/home/Testimonials';
 
 export default function Home() {
   const { userData, token, logout } = useAuth();
-  const router = useRouter();
 
-  useEffect(() => {
-    if (token && userData) {
-      checkProfileStatus();
-    }
-  }, [token, userData]);
-
-  const checkProfileStatus = async () => {
+  const checkProfileStatus = useCallback(async () => {
     try {
       await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/profile/check`, {
         headers: { Authorization: `Bearer ${token}` }
@@ -28,7 +20,13 @@ export default function Home() {
         logout();
       }
     }
-  };
+  }, [token, logout]);
+
+  useEffect(() => {
+    if (token && userData) {
+      checkProfileStatus();
+    }
+  }, [token, userData, checkProfileStatus]);
 
   return (
     <main className="bg-gray-50 min-h-screen">

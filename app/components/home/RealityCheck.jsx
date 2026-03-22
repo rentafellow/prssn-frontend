@@ -51,7 +51,7 @@ const RealityCheck = () => {
         <div className="mt-24 p-12 bg-gray-900 rounded-[3rem] text-center relative overflow-hidden">
             <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
             <div className="relative z-10">
-                <h3 className="text-3xl md:text-4xl font-bold text-white mb-6">"Sometimes, the bravest thing you can do is ask for company."</h3>
+                <h3 className="text-3xl md:text-4xl font-bold text-white mb-6">&ldquo;Sometimes, the bravest thing you can do is ask for company.&rdquo;</h3>
                 <p className="text-gray-400 font-bold uppercase tracking-widest text-sm">— A Grateful Member</p>
             </div>
         </div>

@@ -34,7 +34,7 @@ const FinalCTA = () => {
 
                     {/* Subtext */}
                     <p className="text-xl md:text-2xl text-gray-300 font-medium mb-12 max-w-3xl mx-auto leading-relaxed">
-                        Find someone who gets it. Book a companion in minutes and experience what it's like to have company without the pressure.
+                        Find someone who gets it. Book a companion in minutes and experience what it&apos;s like to have company without the pressure.
                     </p>
 
                     {/* CTA Buttons */}

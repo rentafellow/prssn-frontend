@@ -1,6 +1,6 @@
 
 "use client";
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import io from 'socket.io-client';
 import { useAuth } from '../context/AuthContext';
 
@@ -8,9 +8,13 @@ const Chat = ({ bookingId }) => {
     const { userData, token } = useAuth();
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
-    const [socket, setSocket] = useState(null);
+    const socketRef = useRef(null);
     const messagesEndRef = useRef(null);
     const [connectionStatus, setConnectionStatus] = useState('Connecting...');
+
+    const scrollToBottom = useCallback(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, []);
 
     useEffect(() => {
         if (!token || !bookingId) return;
@@ -23,7 +27,7 @@ const Chat = ({ bookingId }) => {
             reconnectionAttempts: 5,
         });
 
-        setSocket(newSocket);
+        socketRef.current = newSocket;
 
         newSocket.on('connect', () => {
             setConnectionStatus('Online');
@@ -53,20 +57,16 @@ const Chat = ({ bookingId }) => {
         return () => {
             newSocket.disconnect();
         };
-    }, [bookingId, token]);
+    }, [bookingId, token, scrollToBottom]);
 
     useEffect(() => {
         scrollToBottom();
-    }, [messages]);
-
-    const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    };
+    }, [messages, scrollToBottom]);
 
     const handleSendMessage = (e) => {
         e.preventDefault();
-        if (newMessage.trim() && socket) {
-            socket.emit('send_message', { bookingId, message: newMessage });
+        if (newMessage.trim() && socketRef.current) {
+            socketRef.current.emit('send_message', { bookingId, message: newMessage });
             setNewMessage('');
         }
     };

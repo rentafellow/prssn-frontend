@@ -34,6 +34,7 @@ const AdminOnboardingPage = () => {
             return;
         }
         checkStatus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [token, userData]);
 
     const checkStatus = async () => {
@@ -105,7 +106,7 @@ const AdminOnboardingPage = () => {
                   </div>
                   <h1 className="text-2xl font-bold text-gray-900 mb-2 tracking-tight">Verification Pending</h1>
                   <p className="text-gray-500 font-medium mb-8 leading-relaxed">
-                    Your admin credentials are currently under review by a Super Admin. We'll notify you once approved.
+                    Your admin credentials are currently under review by a Super Admin. We&apos;ll notify you once approved.
                   </p>
                   <button onClick={() => router.push('/')} className="px-8 py-3 bg-gray-900 text-white font-bold rounded-full hover:bg-black transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
                       Return Home

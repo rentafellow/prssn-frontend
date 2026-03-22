@@ -26,6 +26,7 @@ const AdminsList = () => {
            return;
         }
         fetchAdmins();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [token, userData]);
     
     const fetchAdmins = async () => {

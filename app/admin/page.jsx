@@ -29,6 +29,7 @@ const AdminPanel = () => {
 
     fetchUnverifiedUsers();
     fetchStats();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, userData]);
 
   const fetchUnverifiedUsers = async () => {
@@ -165,6 +166,7 @@ const AdminPanel = () => {
                 {/* Image Section */}
                 <div className="h-56 w-full bg-gray-100 relative overflow-hidden cursor-pointer" onClick={() => router.push(`/admin/user/${user.id}`)}>
                    {user.profilePhotoUrl || user.idProofFrontUrl ? (
+                     /* eslint-disable-next-line @next/next/no-img-element */
                      <img 
                        src={user.profilePhotoUrl || user.idProofFrontUrl} 
                        alt="Verification" 

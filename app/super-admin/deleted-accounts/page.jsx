@@ -19,6 +19,7 @@ const DeletedAccountsPage = () => {
            return;
         }
         fetchDeletedAccounts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [token, userData]);
     
     const fetchDeletedAccounts = async () => {

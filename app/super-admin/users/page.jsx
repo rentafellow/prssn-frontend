@@ -26,6 +26,7 @@ const UsersList = () => {
            return;
         }
         fetchAllUsers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [token, userData]);
 
     const fetchAllUsers = async () => {

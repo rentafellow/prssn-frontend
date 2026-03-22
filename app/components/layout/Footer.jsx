@@ -1,7 +1,6 @@
 'use client';
 import React from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useAuth } from '../../context/AuthContext';
 
 const Footer = () => {
@@ -19,11 +18,11 @@ const Footer = () => {
                      <span className="text-2xl font-bold tracking-tight lowercase text-white">Presence without pressure.</span>
                 </Link>
                 <p className="text-gray-400 font-medium leading-relaxed max-w-sm mb-4 text-sm">
-                    We're building a world where no one has to be alone if they don't want to be. 
+                    We&apos;re building a world where no one has to be alone if they don&apos;t want to be. 
                     Pressure-free, safe, and purely platonic.
                 </p>
                 <p className="text-gray-500 text-xs font-bold uppercase tracking-widest mb-6 border-l-2 border-green-500 pl-3">
-                    "You can leave anytime. No pressure."
+                    &ldquo;You can leave anytime. No pressure.&rdquo;
                 </p>
                 
                 <div className="flex gap-4">

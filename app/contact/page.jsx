@@ -14,7 +14,7 @@ export default function ContactPage() {
                     <span className='font-black text-sm tracking-widest text-black uppercase'>Get in Touch</span>
                 </div>
                 <h1 className='text-4xl md:text-6xl lg:text-7xl font-black text-black leading-none tracking-tighter'>
-                  LET'S <br/>
+                  LET&apos;S <br/>
                   <span className='text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-400' style={{ WebkitTextStroke: '2px black' }}>CHAT.</span>
                 </h1>
                 <p className='text-xl text-gray-800 font-medium border-l-4 border-black pl-5'>

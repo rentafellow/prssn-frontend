@@ -112,6 +112,7 @@ const OnboardingPage = () => {
         }
 
         checkOnboardingStatus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [token, userData, router]);
 
     const checkOnboardingStatus = async () => {
@@ -125,7 +126,7 @@ const OnboardingPage = () => {
             } else {
                 setPageStatus(res.data.status);
             }
-        } catch (err) {
+        } catch {
             // No profile yet, continue onboarding
             setPageStatus('none');
         }
@@ -566,6 +567,7 @@ const OnboardingPage = () => {
                                 <div className="border-2 border-dashed border-gray-200 rounded-3xl p-8 text-center hover:bg-gray-50 transition-colors">
                                     {previews.profilePhoto ? (
                                         <div className="relative">
+                                            {/* eslint-disable-next-line @next/next/no-img-element */}
                                             <img src={previews.profilePhoto} alt="Preview" className="h-48 w-48 object-cover mx-auto rounded-full shadow-lg" />
                                             <button 
                                                 type="button"
@@ -602,6 +604,7 @@ const OnboardingPage = () => {
                                         <div className="border-2 border-dashed border-gray-200 rounded-2xl p-6 text-center hover:bg-gray-50 transition-colors h-48 flex flex-col items-center justify-center">
                                             {previews.idProofFront ? (
                                                 <div className="relative w-full h-full flex flex-col items-center justify-center">
+                                                    {/* eslint-disable-next-line @next/next/no-img-element */}
                                                     <img src={previews.idProofFront} alt="Preview" className="max-h-24 rounded-lg shadow-sm mb-3" />
                                                     <button 
                                                         type="button"
@@ -632,6 +635,7 @@ const OnboardingPage = () => {
                                         <div className="border-2 border-dashed border-gray-200 rounded-2xl p-6 text-center hover:bg-gray-50 transition-colors h-48 flex flex-col items-center justify-center">
                                             {previews.idProofBack ? (
                                                 <div className="relative w-full h-full flex flex-col items-center justify-center">
+                                                    {/* eslint-disable-next-line @next/next/no-img-element */}
                                                     <img src={previews.idProofBack} alt="Preview" className="max-h-24 rounded-lg shadow-sm mb-3" />
                                                     <button 
                                                         type="button"
@@ -880,6 +884,7 @@ const OnboardingPage = () => {
                                         <div className="border-4 border-dashed border-black rounded-xl p-6 text-center">
                                             {previews.profilePhoto ? (
                                                 <div className="relative">
+                                                    {/* eslint-disable-next-line @next/next/no-img-element */}
                                                     <img src={previews.profilePhoto} alt="Preview" className="max-h-48 mx-auto rounded-lg border-2 border-black" />
                                                     <button 
                                                         type="button"
@@ -910,6 +915,7 @@ const OnboardingPage = () => {
                                         <div className="border-4 border-dashed border-black rounded-xl p-6 text-center">
                                             {previews.backupPhoto ? (
                                                 <div className="relative">
+                                                    {/* eslint-disable-next-line @next/next/no-img-element */}
                                                     <img src={previews.backupPhoto} alt="Preview" className="max-h-48 mx-auto rounded-lg border-2 border-black" />
                                                     <button 
                                                         type="button"
@@ -942,6 +948,7 @@ const OnboardingPage = () => {
                                         <div className="border-4 border-dashed border-black rounded-xl p-6 text-center">
                                             {previews.idProofFront ? (
                                                 <div className="relative">
+                                                    {/* eslint-disable-next-line @next/next/no-img-element */}
                                                     <img src={previews.idProofFront} alt="Preview" className="max-h-48 mx-auto rounded-lg border-2 border-black" />
                                                     <button 
                                                         type="button"
@@ -972,6 +979,7 @@ const OnboardingPage = () => {
                                         <div className="border-4 border-dashed border-black rounded-xl p-6 text-center">
                                             {previews.idProofBack ? (
                                                 <div className="relative">
+                                                    {/* eslint-disable-next-line @next/next/no-img-element */}
                                                     <img src={previews.idProofBack} alt="Preview" className="max-h-48 mx-auto rounded-lg border-2 border-black" />
                                                     <button 
                                                         type="button"
@@ -1093,7 +1101,7 @@ const OnboardingPage = () => {
                                             className="mt-1 h-5 w-5 border-2 border-black rounded flex-shrink-0"
                                         />
                                         <span className="text-sm font-medium text-gray-700">
-                                            I understand I am <span className="font-bold text-black">not here to entertain</span>. I will not try to be "fun" or "interesting".
+                                            I understand I am <span className="font-bold text-black">not here to entertain</span>. I will not try to be &ldquo;fun&rdquo; or &ldquo;interesting&rdquo;.
                                         </span>
                                     </label>
 

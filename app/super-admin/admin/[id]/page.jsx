@@ -20,6 +20,7 @@ const AdminDetailsPage = ({ params }) => {
        return;
     }
     fetchAdminDetails();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, id, userData]);
 
   const fetchAdminDetails = async () => {
@@ -80,6 +81,7 @@ const AdminDetailsPage = ({ params }) => {
                     <h3 className="text-xl font-bold text-gray-800 mb-4 border-b pb-2">Admin Verification Document</h3>
                     <div className="bg-gray-100 rounded-xl p-2 border border-gray-200">
                         {admin.profile?.frontAadharPhoto ? (
+                             /* eslint-disable-next-line @next/next/no-img-element */
                              <img 
                                 src={admin.profile.frontAadharPhoto} 
                                 alt="Verification Doc" 
@@ -102,6 +104,7 @@ const AdminDetailsPage = ({ params }) => {
                              {/* Profile Photo & Basic Info */}
                              <div className="flex items-center gap-4 pb-6 border-b border-gray-200">
                                 {admin.profilePhotoUrl || admin.profile_photo_url ? (
+                                    /* eslint-disable-next-line @next/next/no-img-element */
                                     <img 
                                         src={admin.profilePhotoUrl || admin.profile_photo_url} 
                                         alt="Profile" 
@@ -201,6 +204,7 @@ const AdminDetailsPage = ({ params }) => {
               >
                 ✕
               </button>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img 
                 src={enlargedImage} 
                 alt="Enlarged view" 

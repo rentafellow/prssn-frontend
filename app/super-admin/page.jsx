@@ -10,6 +10,7 @@ import Loading from "../components/common/Loading";
 const Avatar = ({ src, name, size = "w-10 h-10" }) => (
   <div className={`${size} rounded-2xl overflow-hidden bg-gray-100 flex-shrink-0`}>
     {src ? (
+      /* eslint-disable-next-line @next/next/no-img-element */
       <img src={src} alt={name} className="w-full h-full object-cover"
         onError={e => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=e5e7eb&color=374151&bold=true`; }} />
     ) : (
@@ -132,7 +133,6 @@ const PaymentDetailModal = ({ payment, onClose }) => {
 const SuperAdminPanel = () => {
   const { token, userData } = useAuth();
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
   const [analytics, setAnalytics] = useState(null);
   const [payments, setPayments] = useState([]);
   const [paymentsLoading, setPaymentsLoading] = useState(true);
@@ -149,6 +149,7 @@ const SuperAdminPanel = () => {
     }
     fetchAnalytics();
     fetchPayments();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, userData]);
 
   const fetchAnalytics = async () => {
@@ -156,7 +157,6 @@ const SuperAdminPanel = () => {
       const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/super-stats`, { headers: { Authorization: `Bearer ${token}` } });
       setAnalytics(res.data);
     } catch (err) { console.error(err); }
-    finally { setLoading(false); }
   };
 
   const fetchPayments = async () => {

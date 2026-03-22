@@ -80,7 +80,7 @@ export default function Testimonials() {
             </div>
             
             <p className="text-base font-medium leading-relaxed text-gray-600 mb-6 grow">
-                "{card.text}"
+                &ldquo;{card.text}&rdquo;
             </p>
             
             <div className="flex items-center justify-between pt-6 border-t border-gray-50 mt-auto">
