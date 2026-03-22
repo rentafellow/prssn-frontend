@@ -32,7 +32,7 @@ export default function ContactPage() {
                  </div>
                  <div>
                      <h3 className='font-black text-lg uppercase'>Email Us</h3>
-                     <p className='font-medium text-gray-600'>hello@prsnn.com</p>
+                     <p className='font-medium text-gray-600'>admin@prsnn.com</p>
                  </div>
             </div>
 
@@ -46,7 +46,7 @@ export default function ContactPage() {
                  </div>
                  <div>
                      <h3 className='font-black text-lg uppercase'>HQ Location</h3>
-                     <p className='font-medium text-gray-600'>Silicon Valley, CA</p>
+                     <p className='font-medium text-gray-600'>Hyderabad, Telangana, India</p>
                  </div>
             </div>
             
@@ -79,7 +79,7 @@ export default function ContactPage() {
 
                     <div className='flex flex-col gap-2'>
                         <label className='font-black text-black uppercase text-sm'>Email Address</label>
-                        <input type="email" placeholder="john@example.com" className='px-4 py-3 bg-yellow-50 border-2 border-black rounded-xl focus:outline-none focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] focus:-translate-y-1 transition-all placeholder:text-gray-400 font-medium' />
+                        <input type="email" placeholder="admin@prsnn.com" className='px-4 py-3 bg-yellow-50 border-2 border-black rounded-xl focus:outline-none focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] focus:-translate-y-1 transition-all placeholder:text-gray-400 font-medium' />
                     </div>
 
                     <div className='flex flex-col gap-2'>

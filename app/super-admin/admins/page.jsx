@@ -349,7 +349,7 @@ const AdminsList = () => {
                value={newAdmin.email}
                onChange={e => setNewAdmin({...newAdmin, email: e.target.value})}
                className="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-gray-900 focus:ring-2 focus:ring-black/5 focus:border-gray-300 outline-none font-medium transition-all"
-               placeholder="admin@example.com"
+               placeholder="admin@prsnn.com"
              />
            </div>
            <div>

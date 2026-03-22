@@ -26,7 +26,10 @@ export const cachedFetch = async (url, options = {}, useCache = true) => {
 
     // Fetch fresh data
     try {
-        const response = await fetch(url, options);
+        // When running locally, NEXT_PUBLIC_API_URL may be empty causing a request to 'undefined/api/...'
+        const cleanUrl = url.replace('undefined', '');
+        
+        const response = await fetch(cleanUrl, options);
         
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);

@@ -10,7 +10,7 @@ This directory contains the Next.js frontend application for prsnn. It consumes 
 -   **State Management**: React Context (`AuthContext`, `NotificationContext`)
 -   **HTTP Client**: Axios
 -   **Real-time Communication**: Socket.io-client
--   **Payments**: @stripe/react-stripe-js
+-   **Payments**: Razorpay Checkout
 
 ## Getting Started
 
@@ -29,8 +29,8 @@ Create a `.env.local` file in the root of the `frontend` directory and add the f
 NEXT_PUBLIC_API_URL=https://prssn-backend.onrender.com/api
 NEXT_PUBLIC_SOCKET_URL=https://prssn-backend.onrender.com
 
-# Stripe Configuration
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_your_stripe_publishable_key
+# Razorpay Configuration
+NEXT_PUBLIC_RAZORPAY_KEY_ID=rzp_test_your_razorpay_key_id
 ```
 
 ### 3. Run the Development Server

@@ -31,6 +31,7 @@ export default function RootLayout({ children }) {
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${outfit.variable} antialiased`}
+        suppressHydrationWarning
       >
         <AuthProvider>
           <NotificationProvider>

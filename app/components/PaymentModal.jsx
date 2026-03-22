@@ -1,101 +1,141 @@
-
 import React, { useState, useEffect } from 'react';
-import { loadStripe } from '@stripe/stripe-js';
-import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 
-// Make sure to add NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY to your .env.local
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
-
-const CheckoutForm = ({ clientSecret, bookingId, onSuccess, onError }) => {
-    const stripe = useStripe();
-    const elements = useElements();
+const PaymentModal = ({ booking, onClose, onSuccess }) => {
+    const { token, userData } = useAuth();
     const [isLoading, setIsLoading] = useState(false);
-    const [errorMessage, setErrorMessage] = useState(null);
-    const { token } = useAuth();
+    const [error, setError] = useState(null);
+    const [isRazorpayLoaded, setIsRazorpayLoaded] = useState(false);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    // Load razorpay script dynamically
+    useEffect(() => {
+        const loadRazorpayScript = () => {
+            if (document.querySelector('script[src="https://checkout.razorpay.com/v1/checkout.js"]')) {
+                setIsRazorpayLoaded(true);
+                return;
+            }
+            const script = document.createElement("script");
+            script.src = "https://checkout.razorpay.com/v1/checkout.js";
+            script.async = true;
+            script.onload = () => setIsRazorpayLoaded(true);
+            document.body.appendChild(script);
+        };
+        loadRazorpayScript();
+    }, []);
 
-        if (!stripe || !elements) {
+    const handlePayment = async () => {
+        if (!isRazorpayLoaded) {
+            setError("Payment gateway is still loading. Please try again in a moment.");
             return;
         }
 
         setIsLoading(true);
+        setError(null);
 
-        const result = await stripe.confirmPayment({
-            elements,
-            redirect: 'if_required', // Avoid redirect if possible
-        });
+        try {
+            // 1. Create order on the backend
+            const { data } = await axios.post(
+                `${process.env.NEXT_PUBLIC_API_URL}/api/payments/create-intent`,
+                { bookingId: booking._id },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
 
-        if (result.error) {
-            setErrorMessage(result.error.message);
-            setIsLoading(false);
-            if (onError) onError(result.error);
-        } else if (result.paymentIntent && result.paymentIntent.status === 'succeeded') {
-            // Payment succeeded, now verify with backend
-            try {
-                await axios.post(
-                    `${process.env.NEXT_PUBLIC_API_URL}/api/payments/verify-payment`,
-                    { 
-                        paymentIntentId: result.paymentIntent.id,
-                        bookingId: bookingId
+            // 2. Open Razorpay Checkout modal
+            const options = {
+                key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+                amount: data.amount, // Amount is in paise
+                currency: data.currency,
+                name: "Rent A Fellow",
+                description: `Booking with ${booking.companionId?.fullName || "your Companion"}`,
+                order_id: data.orderId,
+                handler: async function (response) {
+                    setIsLoading(true);
+                    try {
+                        // 3. Verify payment on the backend
+                        await axios.post(
+                            `${process.env.NEXT_PUBLIC_API_URL}/api/payments/verify-payment`,
+                            {
+                                razorpayOrderId: response.razorpay_order_id,
+                                razorpayPaymentId: response.razorpay_payment_id,
+                                razorpaySignature: response.razorpay_signature,
+                                bookingId: booking._id
+                            },
+                            { headers: { Authorization: `Bearer ${token}` } }
+                        );
+                        
+                        onSuccess({ id: response.razorpay_payment_id, status: 'succeeded' });
+                    } catch (verifyErr) {
+                         console.error("Verification failed", verifyErr);
+                         setError("Payment succeeded but verification failed on our server. Please contact support.");
+                         setIsLoading(false);
+                    }
+                },
+                prefill: {
+                    name: userData?.fullName || "",
+                    email: userData?.email || "",
+                    contact: userData?.phoneNumber || "", // Must be a valid 10-digit Indian mobile number for UPI to appear
+                },
+                method: {
+                    upi: true,        // Explicitly enable UPI
+                    card: true,
+                    netbanking: true,
+                    wallet: true,
+                    emi: false,
+                },
+                config: {
+                    display: {
+                        blocks: {
+                            upi: {
+                                name: "Pay via UPI",
+                                instruments: [
+                                    { method: "upi" },
+                                ],
+                            },
+                            other: {
+                                name: "Other Payment Methods",
+                                instruments: [
+                                    { method: "card" },
+                                    { method: "netbanking" },
+                                    { method: "wallet" },
+                                ],
+                            },
+                        },
+                        sequence: ["block.upi", "block.other"],
+                        preferences: {
+                            show_default_blocks: false,
+                        },
                     },
-                    { headers: { Authorization: `Bearer ${token}` } }
-                );
-                onSuccess(result.paymentIntent);
-            } catch (err) {
-                console.error("Verification failed", err);
-                setErrorMessage("Payment succeeded but verification failed. Please contact support.");
-            }
+                },
+                theme: {
+                    color: "#16a34a" // Tailwind green-600
+                }
+            };
+
+            const paymentObject = new window.Razorpay(options);
+            
+            paymentObject.on('payment.failed', function (response){
+                 setError(response.error.description);
+                 setIsLoading(false);
+            });
+
+            // Reset loading if user closes the Razorpay modal without completing payment
+            paymentObject.on('modal.dismiss', function () {
+                setIsLoading(false);
+            });
+
+            paymentObject.open();
+            // Hand off to Razorpay UI; loading will reset via handler/dismiss
             setIsLoading(false);
-        } else {
-             setErrorMessage("Payment status: " + result.paymentIntent.status);
-             setIsLoading(false);
+
+        } catch (err) {
+            console.error("Failed to initialize payment", err);
+            const serverError = err.response?.data?.error;
+            const message = err.response?.data?.message || err.message || "Failed to initialize payment.";
+            setError(serverError ? `${message}: ${serverError}` : message);
+            setIsLoading(false);
         }
     };
-
-    return (
-        <form onSubmit={handleSubmit} className="w-full">
-            <PaymentElement />
-            {errorMessage && <div className="text-red-500 text-sm mt-4">{errorMessage}</div>}
-            <button 
-                disabled={!stripe || isLoading} 
-                className="w-full mt-6 bg-green-600 text-white font-bold py-3 rounded-xl hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-                {isLoading ? 'Processing...' : 'Pay Now'}
-            </button>
-        </form>
-    );
-};
-
-const PaymentModal = ({ booking, onClose, onSuccess }) => {
-    const [clientSecret, setClientSecret] = useState('');
-    const { token } = useAuth();
-    const [error, setError] = useState(null);
-
-    useEffect(() => {
-        const fetchClientSecret = async () => {
-            try {
-                const res = await axios.post(
-                    `${process.env.NEXT_PUBLIC_API_URL}/api/payments/create-intent`,
-                    { bookingId: booking._id },
-                    { headers: { Authorization: `Bearer ${token}` } }
-                );
-                setClientSecret(res.data.clientSecret);
-            } catch (err) {
-                console.error("Failed to fetch payment intent", err);
-                const serverError = err.response?.data?.error;
-                const message = err.response?.data?.message || err.message || "Failed to initialize payment.";
-                setError(serverError ? `${message}: ${serverError}` : message);
-            }
-        };
-
-        if (booking) {
-            fetchClientSecret();
-        }
-    }, [booking, token]);
 
     return (
         <div className="fixed inset-0 bg-black/50 overflow-y-auto h-full w-full z-50 flex items-center justify-center p-4">
@@ -112,7 +152,7 @@ const PaymentModal = ({ booking, onClose, onSuccess }) => {
                     <p className="text-gray-500 mt-2">
                         Complete your payment to enter the session with <span className="font-bold text-black">{booking.companionId?.fullName || "your Companion"}</span>
                     </p>
-                     <div className="mt-4 bg-gray-50 py-3 rounded-xl border border-gray-100">
+                    <div className="mt-4 bg-gray-50 py-3 rounded-xl border border-gray-100">
                         <p className="text-sm text-gray-400 uppercase tracking-widest font-bold mb-1">Total Amount</p>
                         <p className="text-3xl font-bold text-green-600">
                            ₹{(booking.pricePerHour * (booking.duration === '30' ? 0.5 : booking.duration === '90' ? 1.5 : 1)).toFixed(2)}
@@ -120,21 +160,17 @@ const PaymentModal = ({ booking, onClose, onSuccess }) => {
                     </div>
                 </div>
 
-                {error ? (
-                    <div className="text-red-500 text-center">{error}</div>
-                ) : clientSecret ? (
-                    <Elements stripe={stripePromise} options={{ clientSecret }}>
-                        <CheckoutForm 
-                            clientSecret={clientSecret} 
-                            bookingId={booking._id} 
-                            onSuccess={onSuccess}
-                        />
-                    </Elements>
-                ) : (
-                    <div className="flex justify-center py-8">
-                        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-gray-900"></div>
-                    </div>
-                )}
+                {error && <div className="text-red-500 text-center mb-4">{error}</div>}
+
+                <div className="mt-6 flex flex-col gap-3 w-full">
+                    <button 
+                        onClick={handlePayment}
+                        disabled={isLoading || !isRazorpayLoaded}
+                        className="w-full bg-green-600 text-white font-bold py-3 rounded-xl hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        {isLoading ? 'Processing...' : (!isRazorpayLoaded ? 'Loading setup...' : '🔒 Pay Now (UPI / Card / Net Banking)')}
+                    </button>
+                </div>
             </div>
         </div>
     );

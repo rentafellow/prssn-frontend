@@ -185,8 +185,8 @@ export default function RefundPolicy() {
                      <div>
                         <h3 className="font-black text-lg mb-2">10. CONTACT</h3>
                         <p className="text-sm" style={{color: 'var(--color-olive)'}}>For refund-related questions:</p>
-                         <a href="mailto:rentafellow00@gmail.com" className="text-sm font-bold text-black border-b border-black hover:bg-black hover:text-white transition-colors">
-                            rentafellow00@gmail.com
+                         <a href="mailto:admin@prsnn.com" className="text-sm font-bold text-black border-b border-black hover:bg-black hover:text-white transition-colors">
+                            admin@prsnn.com
                         </a>
                      </div>
                 </div>

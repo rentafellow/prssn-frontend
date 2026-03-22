@@ -267,7 +267,7 @@ export default function DisputePolicy() {
                         <h3 className="font-black text-lg mb-2">12. CONTACT</h3>
                         <p className="text-sm" style={{color: 'var(--color-olive)'}}>
                             For dispute-related questions:<br/>
-                            <span className="font-bold text-black border-b border-black">rentafellow00@gmail.com</span>
+                            <span className="font-bold text-black border-b border-black">admin@prsnn.com</span>
                         </p>
                      </div>
                  </div>
