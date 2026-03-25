@@ -26,9 +26,9 @@ const Footer = () => {
                 </p>
                 
                 <div className="flex gap-4">
-                     <button suppressHydrationWarning={true} className="w-8 h-8 rounded-full bg-gray-900 flex items-center justify-center hover:bg-white hover:text-black transition-colors text-xs">𝕏</button>
-                     <button suppressHydrationWarning={true} className="w-8 h-8 rounded-full bg-gray-900 flex items-center justify-center hover:bg-white hover:text-black transition-colors text-xs">in</button>
-                     <button suppressHydrationWarning={true} className="w-8 h-8 rounded-full bg-gray-900 flex items-center justify-center hover:bg-white hover:text-black transition-colors text-xs">IG</button>
+                     <a href="https://x.com/prsnn_india" target="_blank" rel="noopener noreferrer" suppressHydrationWarning={true} className="w-8 h-8 rounded-full bg-gray-900 flex items-center justify-center hover:bg-white hover:text-black transition-colors text-xs">𝕏</a>
+                     <a href="https://www.linkedin.com/company/112081521" target="_blank" rel="noopener noreferrer" suppressHydrationWarning={true} className="w-8 h-8 rounded-full bg-gray-900 flex items-center justify-center hover:bg-white hover:text-black transition-colors text-xs">in</a>
+                     <a href="https://www.instagram.com/prsnn_india" target="_blank" rel="noopener noreferrer" suppressHydrationWarning={true} className="w-8 h-8 rounded-full bg-gray-900 flex items-center justify-center hover:bg-white hover:text-black transition-colors text-xs">IG</a>
                 </div>
             </div>
 

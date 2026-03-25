@@ -192,7 +192,7 @@ const Profile = () => {
                              <div className="relative z-10 flex flex-col items-center text-center">
                                 <div className="w-32 h-32 rounded-full border-4 border-white shadow-lg mb-6 overflow-hidden relative">
                                     <Image 
-                                        src={profileData?.profilePhoto || profileData?.companionProfile?.profilePhoto || "/profile_pic.png"} 
+                                        src={profileData?.profilePhotoUrl || "/profile_pic.png"} 
                                         alt="Profile" 
                                         fill
                                         className="object-cover"
