@@ -2,6 +2,7 @@
 "use client";
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import io from 'socket.io-client';
+import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 
 const Chat = ({ bookingId }) => {
@@ -11,6 +12,7 @@ const Chat = ({ bookingId }) => {
     const socketRef = useRef(null);
     const messagesEndRef = useRef(null);
     const [connectionStatus, setConnectionStatus] = useState('Connecting...');
+    const [isCancelled, setIsCancelled] = useState(false);
 
     const scrollToBottom = useCallback(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -49,6 +51,11 @@ const Chat = ({ bookingId }) => {
             scrollToBottom();
         });
 
+        newSocket.on('session_cancelled', () => {
+            setIsCancelled(true);
+            setConnectionStatus('Cancelled');
+        });
+
         newSocket.on('error', (error) => {
             console.error('Socket logic error:', error);
             alert(typeof error === 'string' ? error : 'An error occurred');
@@ -65,9 +72,29 @@ const Chat = ({ bookingId }) => {
 
     const handleSendMessage = (e) => {
         e.preventDefault();
-        if (newMessage.trim() && socketRef.current) {
+        if (newMessage.trim() && socketRef.current && !isCancelled) {
             socketRef.current.emit('send_message', { bookingId, message: newMessage });
             setNewMessage('');
+        }
+    };
+
+    const handleCancelSession = async () => {
+        if (!window.confirm("Are you sure you want to cancel this session? You won't be able to chat anymore.")) {
+            return;
+        }
+
+        try {
+            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/bookings/${bookingId}/cancel`, {}, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setIsCancelled(true);
+            setConnectionStatus('Cancelled');
+            if (socketRef.current) {
+                socketRef.current.emit('cancel_session', { bookingId });
+            }
+        } catch (error) {
+            console.error("Failed to cancel session:", error);
+            alert("Failed to cancel session. Please try again.");
         }
     };
 
@@ -84,9 +111,19 @@ const Chat = ({ bookingId }) => {
                         <p className="text-xs text-gray-500 font-medium">Private & Secure</p>
                     </div>
                 </div>
-                <div className="flex items-center gap-2 bg-gray-50 px-3 py-1.5 rounded-full border border-gray-100">
-                    <div className={`w-2 h-2 rounded-full ${connectionStatus === 'Online' ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></div>
-                    <span className="text-xs font-bold text-gray-600 uppercase tracking-wider">{connectionStatus}</span>
+                <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 bg-gray-50 px-3 py-1.5 rounded-full border border-gray-100">
+                        <div className={`w-2 h-2 rounded-full ${connectionStatus === 'Online' && !isCancelled ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></div>
+                        <span className="text-xs font-bold text-gray-600 uppercase tracking-wider">{isCancelled ? 'Cancelled' : connectionStatus}</span>
+                    </div>
+                    {!isCancelled && (
+                        <button
+                            onClick={handleCancelSession}
+                            className="px-3 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 rounded-full text-xs font-bold transition-all shadow-sm"
+                        >
+                            Cancel Session
+                        </button>
+                    )}
                 </div>
             </div>
             
@@ -129,13 +166,14 @@ const Chat = ({ bookingId }) => {
                     type="text"
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
-                    placeholder="Type your message..."
-                    className="flex-1 px-4 py-3 bg-gray-50 border border-transparent focus:bg-white focus:border-gray-200 rounded-xl outline-none transition-all font-medium text-gray-700 placeholder:text-gray-400"
+                    placeholder={isCancelled ? "Session has been cancelled" : "Type your message..."}
+                    disabled={isCancelled || connectionStatus !== 'Online'}
+                    className="flex-1 px-4 py-3 bg-gray-50 border border-transparent focus:bg-white focus:border-gray-200 rounded-xl outline-none transition-all font-medium text-gray-700 placeholder:text-gray-400 disabled:bg-gray-100 disabled:cursor-not-allowed"
                 />
                 <button 
                     type="submit"
-                    disabled={!newMessage.trim() || connectionStatus !== 'Online'}
-                    className="p-3 bg-black text-white rounded-xl hover:bg-gray-800 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:scale-100 transition-all shadow-lg shadow-gray-200"
+                    disabled={!newMessage.trim() || connectionStatus !== 'Online' || isCancelled}
+                    className="p-3 bg-black text-white rounded-xl hover:bg-gray-800 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:scale-100 transition-all shadow-lg shadow-gray-200 disabled:cursor-not-allowed"
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
                       <path d="M3.478 2.404a.75.75 0 0 0-.926.941l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.404Z" />

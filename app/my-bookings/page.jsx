@@ -244,7 +244,16 @@ const MyBookings = () => {
                                            ) : booking.status === 'pending' ? (
                                                <span className="text-xs font-bold text-yellow-600 uppercase tracking-widest bg-yellow-50 px-3 py-1 rounded-full border border-yellow-100">Waiting for response...</span>
                                            ) : (
-                                                <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Request Closed</span>
+                                               <div className="flex items-center gap-4">
+                                                   <span className="text-xs font-bold text-gray-400 uppercase tracking-widest my-auto">Request Closed</span>
+                                                   {booking.paymentStatus === 'paid' && (
+                                                       <Link href={`/session/${booking._id}`} className="w-full md:w-auto">
+                                                           <button className="px-5 py-2.5 bg-gray-100 text-gray-700 font-bold rounded-full shadow-sm hover:bg-gray-200 transition-all text-sm flex items-center justify-center gap-2">
+                                                               <span>📜</span> View History
+                                                           </button>
+                                                       </Link>
+                                                   )}
+                                               </div>
                                            )}
                                        </div>
                                    )}

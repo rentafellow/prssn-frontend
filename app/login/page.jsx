@@ -98,7 +98,7 @@ const Login = () => {
           formData.append("verificationImage", verificationImage);
         }
 
-        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`, formData);
+        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`, formData);
         
         // Pass email to verification page
         router.push(`/verify-email?email=${encodeURIComponent(email)}`);

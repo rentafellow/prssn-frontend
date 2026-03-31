@@ -3,10 +3,12 @@ import React, { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 import Alert from "../components/common/Alert";
+import { useAuth } from "../context/AuthContext";
 
 const VerifyEmailContent = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
+    const { login } = useAuth();
     
     const [email, setEmail] = useState("");
     const [otp, setOtp] = useState("");
@@ -26,14 +28,22 @@ const VerifyEmailContent = () => {
         setMessage(null);
 
         try {
-            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/verify-email`, {
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/verify-email`, {
                 email,
                 otp
             });
-            setMessage({ type: "success", title: "Success!", message: "Email verified successfully. Redirecting to login..." });
-            setTimeout(() => {
-                router.push("/login");
-            }, 2000);
+            const data = response.data;
+            if (data.token) {
+                setMessage({ type: "success", title: "Success!", message: "Email verified successfully. Logging you in..." });
+                setTimeout(() => {
+                    login(data.token, data.user);
+                }, 1500);
+            } else {
+                setMessage({ type: "success", title: "Success!", message: "Email verified successfully. Redirecting to login..." });
+                setTimeout(() => {
+                    router.push("/login");
+                }, 1500);
+            }
         } catch (error) {
             setMessage({ 
                 type: "error", 
