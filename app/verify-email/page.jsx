@@ -34,15 +34,11 @@ const VerifyEmailContent = () => {
             });
             const data = response.data;
             if (data.token) {
-                setMessage({ type: "success", title: "Success!", message: "Email verified successfully. Logging you in..." });
-                setTimeout(() => {
-                    login(data.token, data.user);
-                }, 1500);
+                setMessage({ type: "success", title: "Success!", message: "Email verified successfully." });
+                await login(data.token, data.user);
             } else {
                 setMessage({ type: "success", title: "Success!", message: "Email verified successfully. Redirecting to login..." });
-                setTimeout(() => {
-                    router.push("/login");
-                }, 1500);
+                router.push("/login");
             }
         } catch (error) {
             setMessage({ 

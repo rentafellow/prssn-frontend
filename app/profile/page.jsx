@@ -11,13 +11,14 @@ import cachedFetch, { clearCache } from '../utils/cache';
  * Profile Page with Edit Functionality
  */
 const Profile = () => {
-    const { userData, logout } = useAuth();
+    const { userData, logout, fetchProfile: fetchAuthProfile } = useAuth();
     const router = useRouter();
     const { showNotification } = useNotification();
     const [isEditing, setIsEditing] = useState(false);
     const [profileData, setProfileData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+    const [uploadingPhoto, setUploadingPhoto] = useState(false);
     const [phoneError, setPhoneError] = useState('');
     
     const [formData, setFormData] = useState({
@@ -98,6 +99,65 @@ const Profile = () => {
             ...prev,
             [name]: type === 'checkbox' ? checked : value
         }));
+    };
+
+    const handlePhotoChange = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (file.size > 2 * 1024 * 1024) {
+            showNotification('error', 'Image size must be less than 2MB');
+            return;
+        }
+
+        const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
+        if (!validTypes.includes(file.type)) {
+            showNotification('error', 'Only JPG, PNG and WEBP formats are allowed');
+            return;
+        }
+
+        setUploadingPhoto(true);
+        try {
+            const formDataToSubmit = new FormData();
+            formDataToSubmit.append('profilePhoto', file);
+            
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/profile/update`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: formDataToSubmit
+            });
+
+            if (response.ok) {
+                clearCache();
+                
+                const updatedDataRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/profile`, {
+                     headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const updatedData = await updatedDataRes.json();
+                
+                setProfileData(prev => ({
+                    ...prev,
+                    profilePhotoUrl: updatedData.profilePhotoUrl
+                }));
+                
+                if (fetchAuthProfile) {
+                     fetchAuthProfile(token, userData);
+                }
+
+                showNotification('success', 'Profile photo updated successfully!');
+            } else {
+                const error = await response.json();
+                showNotification('error', `Error: ${error.message}`);
+            }
+        } catch (error) {
+            console.error('Error updating profile photo:', error);
+            showNotification('error', 'Failed to update profile photo');
+        } finally {
+            setUploadingPhoto(false);
+        }
     };
 
     const handleSaveProfile = async () => {
@@ -190,13 +250,25 @@ const Profile = () => {
                              <div className="absolute top-0 right-0 w-64 h-64 bg-yellow-50 rounded-full blur-3xl opacity-50 transform translate-x-10 -translate-y-10 group-hover:bg-yellow-100 transition-colors"></div>
 
                              <div className="relative z-10 flex flex-col items-center text-center">
-                                <div className="w-32 h-32 rounded-full border-4 border-white shadow-lg mb-6 overflow-hidden relative">
+                                <div className="w-32 h-32 rounded-full border-4 border-white shadow-lg mb-6 overflow-hidden relative group/photo">
                                     <Image 
                                         src={profileData?.profilePhotoUrl || "/profile_pic.png"} 
                                         alt="Profile" 
                                         fill
                                         className="object-cover"
                                     />
+                                    <label className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover/photo:opacity-100 transition-opacity cursor-pointer">
+                                        <span className="text-white text-xs font-bold text-center px-2">
+                                            {uploadingPhoto ? 'Uploading...' : 'Change Photo'}
+                                        </span>
+                                        <input 
+                                            type="file" 
+                                            accept="image/jpeg, image/png, image/webp" 
+                                            className="hidden" 
+                                            onChange={handlePhotoChange}
+                                            disabled={uploadingPhoto}
+                                        />
+                                    </label>
                                 </div>
                                 
                                 {!isEditing ? (

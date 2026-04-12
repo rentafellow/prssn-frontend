@@ -109,6 +109,9 @@ const NavBar = () => {
                                             <p onClick={()=>{router.push('/my-bookings')}} className='px-5 py-2.5 text-sm font-medium text-gray-600 hover:text-green-700 hover:bg-green-50 transition-all cursor-pointer'>
                                                 My Bookings
                                             </p>
+                                            <p onClick={()=>{router.push('/notifications')}} className='px-5 py-2.5 text-sm font-medium text-gray-600 hover:text-green-700 hover:bg-green-50 transition-all cursor-pointer flex items-center justify-between'>
+                                                <span>Notifications</span>
+                                            </p>
                                         </>
                                     )}
                                     
@@ -206,6 +209,9 @@ const NavBar = () => {
                                         </li>
                                         <li>
                                             <Link href="/my-bookings" onClick={() => setIsMenuOpen(false)} className="block px-5 py-3 rounded-xl transition-all text-gray-600 hover:bg-green-50 hover:text-green-700">My Bookings</Link>
+                                        </li>
+                                        <li>
+                                            <Link href="/notifications" onClick={() => setIsMenuOpen(false)} className="block px-5 py-3 rounded-xl transition-all text-gray-600 hover:bg-green-50 hover:text-green-700">Notifications</Link>
                                         </li>
                                     </>
                                 )}

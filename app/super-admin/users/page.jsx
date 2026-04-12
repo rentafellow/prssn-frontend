@@ -86,14 +86,21 @@ const UsersList = () => {
         }
     };
 
+    useEffect(() => {
+        setPage(1);
+    }, [searchTerm, statusFilter]);
+
     // Prepare User Data (Filter + Pagination)
     const filteredUsers = users.filter(user => {
         const matchesSearch = user.username.toLowerCase().includes(searchTerm.toLowerCase()) || 
                               user.email.toLowerCase().includes(searchTerm.toLowerCase());
         
-        const matchesStatus = statusFilter 
-            ? (statusFilter === 'verified' ? user.is_verified : !user.is_verified)
-            : true;
+        let matchesStatus = true;
+        if (statusFilter === 'verified') {
+            matchesStatus = user.is_verified;
+        } else if (statusFilter === 'pending') {
+            matchesStatus = !user.is_verified;
+        }
 
         return matchesSearch && matchesStatus;
     });

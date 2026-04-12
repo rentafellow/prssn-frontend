@@ -43,7 +43,7 @@ const PaymentModal = ({ booking, onClose, onSuccess }) => {
 
             // 2. Open Razorpay Checkout modal
             const options = {
-                key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+                key: data.keyId || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
                 amount: data.amount, // Amount is in paise
                 currency: data.currency,
                 name: "Rent A Fellow",
@@ -109,6 +109,11 @@ const PaymentModal = ({ booking, onClose, onSuccess }) => {
                 },
                 theme: {
                     color: "#16a34a" // Tailwind green-600
+                },
+                modal: {
+                    ondismiss: function () {
+                        setIsLoading(false);
+                    }
                 }
             };
 
@@ -119,14 +124,9 @@ const PaymentModal = ({ booking, onClose, onSuccess }) => {
                  setIsLoading(false);
             });
 
-            // Reset loading if user closes the Razorpay modal without completing payment
-            paymentObject.on('modal.dismiss', function () {
-                setIsLoading(false);
-            });
-
             paymentObject.open();
             // Hand off to Razorpay UI; loading will reset via handler/dismiss
-            setIsLoading(false);
+            // (loading reset also handled by modal.ondismiss)
 
         } catch (err) {
             console.error("Failed to initialize payment", err);

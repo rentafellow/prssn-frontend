@@ -38,8 +38,6 @@ const OnboardingPage = () => {
         profilePhoto: null,
         // Companion-specific fields
         backupPhoto: null,
-        idProofFront: null,
-        idProofBack: null,
         description: '',
         monday_availability: false,
         tuesday_availability: false,
@@ -57,9 +55,7 @@ const OnboardingPage = () => {
 
     const [previews, setPreviews] = useState({
         profilePhoto: null,
-        backupPhoto: null,
-        idProofFront: null,
-        idProofBack: null
+        backupPhoto: null
     });
 
     const [extraConsents, setExtraConsents] = useState({
@@ -163,6 +159,23 @@ const OnboardingPage = () => {
         });
     };
 
+    const handleSelectAllSubTags = (mainTag) => {
+        const subTags = modeTags[mainTag];
+        setFormData(prev => {
+            const currentTags = prev.tags || [];
+            const allSelected = subTags.every(t => currentTags.includes(t));
+            
+            if (allSelected) {
+                // Deselect all
+                return { ...prev, tags: currentTags.filter(t => !subTags.includes(t)) };
+            } else {
+                // Select all missing
+                const newTags = new Set([...currentTags, ...subTags]);
+                return { ...prev, tags: Array.from(newTags) };
+            }
+        });
+    };
+
     const handleFileChange = (e, type) => {
         const file = e.target.files[0];
         if (file) {
@@ -196,8 +209,6 @@ const OnboardingPage = () => {
             data.append('city', formData.city);
             data.append('area', formData.area);
             if (formData.profilePhoto) data.append('profilePhoto', formData.profilePhoto);
-            if (formData.idProofFront) data.append('idProofFront', formData.idProofFront);
-            if (formData.idProofBack) data.append('idProofBack', formData.idProofBack);
 
             // Submit as basic user (not companion)
             await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/profile/onboard-basic`, data, {
@@ -295,8 +306,6 @@ const OnboardingPage = () => {
             
             if (formData.profilePhoto) data.append('profilePhoto', formData.profilePhoto);
             if (formData.backupPhoto) data.append('backupPhoto', formData.backupPhoto);
-            if (formData.idProofFront) data.append('idProofFront', formData.idProofFront);
-            if (formData.idProofBack) data.append('idProofBack', formData.idProofBack);
 
             await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/profile/onboard-companion`, data, {
                 headers: { 
@@ -594,74 +603,6 @@ const OnboardingPage = () => {
                                 </div>
                             </div>
 
-                            <div className="pt-6 border-t border-gray-100">
-                                <h2 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-6">ID Verification</h2>
-
-                                {/* ID Proofs */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div>
-                                        <label className="block text-sm font-bold text-gray-700 mb-2">ID Proof (Front) <span className="text-red-500">*</span></label>
-                                        <div className="border-2 border-dashed border-gray-200 rounded-2xl p-6 text-center hover:bg-gray-50 transition-colors h-48 flex flex-col items-center justify-center">
-                                            {previews.idProofFront ? (
-                                                <div className="relative w-full h-full flex flex-col items-center justify-center">
-                                                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                                                    <img src={previews.idProofFront} alt="Preview" className="max-h-24 rounded-lg shadow-sm mb-3" />
-                                                    <button 
-                                                        type="button"
-                                                        onClick={() => { setPreviews(prev => ({ ...prev, idProofFront: null })); setFormData(prev => ({ ...prev, idProofFront: null })); }}
-                                                        className="text-xs font-bold text-red-500 hover:text-red-600"
-                                                    >
-                                                        Remove
-                                                    </button>
-                                                </div>
-                                            ) : (
-                                                <label className="cursor-pointer block w-full h-full flex flex-col items-center justify-center">
-                                                    <div className="h-10 w-10 bg-gray-100 rounded-full flex items-center justify-center mb-2 text-lg">🪪</div>
-                                                    <p className="font-bold text-gray-700 text-sm">Front Side</p>
-                                                    <input 
-                                                        type="file" 
-                                                        accept="image/*"
-                                                        required
-                                                        onChange={(e) => handleFileChange(e, 'idProofFront')}
-                                                        className="hidden"
-                                                    />
-                                                </label>
-                                            )}
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-sm font-bold text-gray-700 mb-2">ID Proof (Back) <span className="text-red-500">*</span></label>
-                                        <div className="border-2 border-dashed border-gray-200 rounded-2xl p-6 text-center hover:bg-gray-50 transition-colors h-48 flex flex-col items-center justify-center">
-                                            {previews.idProofBack ? (
-                                                <div className="relative w-full h-full flex flex-col items-center justify-center">
-                                                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                                                    <img src={previews.idProofBack} alt="Preview" className="max-h-24 rounded-lg shadow-sm mb-3" />
-                                                    <button 
-                                                        type="button"
-                                                        onClick={() => { setPreviews(prev => ({ ...prev, idProofBack: null })); setFormData(prev => ({ ...prev, idProofBack: null })); }}
-                                                        className="text-xs font-bold text-red-500 hover:text-red-600"
-                                                    >
-                                                        Remove
-                                                    </button>
-                                                </div>
-                                            ) : (
-                                                <label className="cursor-pointer block w-full h-full flex flex-col items-center justify-center">
-                                                    <div className="h-10 w-10 bg-gray-100 rounded-full flex items-center justify-center mb-2 text-lg">🪪</div>
-                                                    <p className="font-bold text-gray-700 text-sm">Back Side</p>
-                                                    <input 
-                                                        type="file" 
-                                                        accept="image/*"
-                                                        required
-                                                        onChange={(e) => handleFileChange(e, 'idProofBack')}
-                                                        className="hidden"
-                                                    />
-                                                </label>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
 
                             <div className="bg-gray-50 rounded-2xl p-6">
                                 <label className="flex items-start gap-3 cursor-pointer">
@@ -826,29 +767,45 @@ const OnboardingPage = () => {
                                         <div className="mt-8 animate-fadeIn">
                                             <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Refine Your Skills</h3>
                                             <div className="space-y-6">
-                                                {availableTags.filter(mainTag => formData.tags.includes(mainTag)).map(mainTag => (
-                                                    <div key={mainTag} className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
-                                                        <h4 className="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2">
-                                                            <span>{tagIcons[mainTag]}</span> {mainTag} options
-                                                        </h4>
-                                                        <div className="flex flex-wrap gap-2">
-                                                            {modeTags[mainTag].map(subTag => (
+                                                {availableTags.filter(mainTag => formData.tags.includes(mainTag)).map(mainTag => {
+                                                    const subTags = modeTags[mainTag];
+                                                    const allSelected = subTags.every(t => formData.tags.includes(t));
+                                                    
+                                                    return (
+                                                        <div key={mainTag} className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+                                                            <h4 className="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2">
+                                                                <span>{tagIcons[mainTag]}</span> {mainTag} options
+                                                            </h4>
+                                                            <div className="flex flex-wrap gap-2">
                                                                 <button
-                                                                    key={subTag}
                                                                     type="button"
-                                                                    onClick={() => handleTagToggle(subTag)}
+                                                                    onClick={() => handleSelectAllSubTags(mainTag)}
                                                                     className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${
-                                                                        formData.tags.includes(subTag)
+                                                                        allSelected
                                                                         ? 'bg-black text-white border-black'
                                                                         : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100'
                                                                     }`}
                                                                 >
-                                                                    {subTag}
+                                                                    Select All
                                                                 </button>
-                                                            ))}
+                                                                {subTags.map(subTag => (
+                                                                    <button
+                                                                        key={subTag}
+                                                                        type="button"
+                                                                        onClick={() => handleTagToggle(subTag)}
+                                                                        className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${
+                                                                            formData.tags.includes(subTag)
+                                                                            ? 'bg-black text-white border-black'
+                                                                            : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100'
+                                                                        }`}
+                                                                    >
+                                                                        {subTag}
+                                                                    </button>
+                                                                ))}
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                ))}
+                                                    );
+                                                })}
                                             </div>
                                         </div>
                                     )}
@@ -941,70 +898,7 @@ const OnboardingPage = () => {
                                     </div>
                                 </div>
 
-                                {/* ID Proofs */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                        <label className="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wider">ID Proof (Front) *</label>
-                                        <div className="border-4 border-dashed border-black rounded-xl p-6 text-center">
-                                            {previews.idProofFront ? (
-                                                <div className="relative">
-                                                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                                                    <img src={previews.idProofFront} alt="Preview" className="max-h-48 mx-auto rounded-lg border-2 border-black" />
-                                                    <button 
-                                                        type="button"
-                                                        onClick={() => { setPreviews(prev => ({ ...prev, idProofFront: null })); setFormData(prev => ({ ...prev, idProofFront: null })); }}
-                                                        className="mt-4 px-4 py-2 bg-red-500 text-white font-bold rounded-lg border-2 border-black"
-                                                    >
-                                                        Remove
-                                                    </button>
-                                                </div>
-                                            ) : (
-                                                <label className="cursor-pointer">
-                                                    <div className="text-6xl mb-4">🪪</div>
-                                                    <p className="font-bold text-gray-900">Front of ID</p>
-                                                    <input 
-                                                        type="file" 
-                                                        accept="image/*"
-                                                        required
-                                                        onChange={(e) => handleFileChange(e, 'idProofFront')}
-                                                        className="hidden"
-                                                    />
-                                                </label>
-                                            )}
-                                        </div>
-                                    </div>
 
-                                    <div>
-                                        <label className="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wider">ID Proof (Back) *</label>
-                                        <div className="border-4 border-dashed border-black rounded-xl p-6 text-center">
-                                            {previews.idProofBack ? (
-                                                <div className="relative">
-                                                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                                                    <img src={previews.idProofBack} alt="Preview" className="max-h-48 mx-auto rounded-lg border-2 border-black" />
-                                                    <button 
-                                                        type="button"
-                                                        onClick={() => { setPreviews(prev => ({ ...prev, idProofBack: null })); setFormData(prev => ({ ...prev, idProofBack: null })); }}
-                                                        className="mt-4 px-4 py-2 bg-red-500 text-white font-bold rounded-lg border-2 border-black"
-                                                    >
-                                                        Remove
-                                                    </button>
-                                                </div>
-                                            ) : (
-                                                <label className="cursor-pointer">
-                                                    <div className="text-6xl mb-4">🪪</div>
-                                                    <p className="font-bold text-gray-900">Back of ID</p>
-                                                    <input 
-                                                        type="file" 
-                                                        accept="image/*"
-                                                        required
-                                                        onChange={(e) => handleFileChange(e, 'idProofBack')}
-                                                        className="hidden"
-                                                    />
-                                                </label>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
 
                                 <div className="flex gap-3">
                                     <button 

@@ -53,7 +53,8 @@ const Footer = () => {
                     <li><Link href="/privacy-policy" className="text-gray-300 hover:text-white transition-colors">Privacy Policy</Link></li>
                     <li><Link href="/terms-of-service" className="text-gray-300 hover:text-white transition-colors">Terms of Service</Link></li>
                     <li><Link href="/code-of-conduct" className="text-gray-300 hover:text-white transition-colors">Code of Conduct</Link></li>
-                    <li><Link href="/safety" className="text-gray-300 hover:text-white transition-colors">Safety Center</Link></li>
+                    <li><Link href="/user-instructions" className="text-gray-300 hover:text-white transition-colors">User Instructions</Link></li>
+                    <li><Link href="/fellow-training-manual" className="text-gray-300 hover:text-white transition-colors">Fellow Training Manual</Link></li>
                     <li><Link href="/refund-policy" className="text-gray-300 hover:text-white transition-colors">Refund Policy</Link></li>
                     <li><Link href="/payment-terms" className="text-gray-300 hover:text-white transition-colors">Payment Terms</Link></li>
                     <li><Link href="/dispute-policy" className="text-gray-300 hover:text-white transition-colors">Dispute Policy</Link></li>

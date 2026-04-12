@@ -42,14 +42,21 @@ const AllUsersPage = () => {
         }
     };
 
+    useEffect(() => {
+        setPage(1);
+    }, [searchTerm, filterStatus]);
+
     // Prepare User Data (Filter + Pagination)
     const filteredUsers = users.filter(user => {
         const matchesSearch = user.username.toLowerCase().includes(searchTerm.toLowerCase()) || 
                               user.email.toLowerCase().includes(searchTerm.toLowerCase());
         
-        const matchesStatus = filterStatus === 'all' 
-            ? true 
-            : (filterStatus === 'verified' ? user.is_verified : !user.is_verified);
+        let matchesStatus = true;
+        if (filterStatus === 'verified') {
+            matchesStatus = user.verification_status === 'verified';
+        } else if (filterStatus === 'pending') {
+            matchesStatus = user.verification_status === 'pending';
+        }
 
         return matchesSearch && matchesStatus;
     });
