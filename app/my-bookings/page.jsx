@@ -145,7 +145,7 @@ const MyBookings = () => {
                             onClick={() => router.push('/companions')}
                             className="px-8 py-3 bg-green-600 text-white font-bold rounded-full hover:bg-green-700 shadow-lg hover:shadow-green-200 hover:-translate-y-0.5 transition-all"
                         >
-                            Find a Presence
+                            Find a Companion
                         </button>
                     )}
                </div>

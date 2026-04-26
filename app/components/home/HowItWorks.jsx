@@ -11,7 +11,7 @@ export default function HowItWorks() {
     },
     {
       number: "02",
-      title: "Find a presence",
+      title: "Find a Companion",
       description: "Browse verified companions. Check their 'Comfort Zones' (tags like Reading, Gaming, Silence). Book a slot.",
       color: "bg-yellow-100",
       textColor: "text-yellow-800"

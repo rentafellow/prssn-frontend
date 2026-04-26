@@ -43,7 +43,7 @@ const FinalCTA = () => {
                             onClick={() => router.push('/companions')}
                             className="px-10 py-5 bg-white text-gray-900 rounded-full font-bold text-lg hover:bg-gray-100 hover:scale-105 transition-all shadow-2xl flex items-center gap-2 w-full sm:w-auto justify-center"
                         >
-                            Find a Presence
+                            Find a Companion
                             <span className="text-xl">→</span>
                         </button>
                         {!userData && (

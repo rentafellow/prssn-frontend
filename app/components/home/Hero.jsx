@@ -48,7 +48,7 @@ const Hero = () => {
                         onClick={() => router.push('/companions')}
                         className='group px-8 py-4 bg-black text-white rounded-full font-bold text-lg hover:bg-gray-800 transition-all w-full sm:w-auto flex items-center justify-center gap-3 shadow-2xl hover:shadow-xl hover:-translate-y-1'
                     >
-                        Find a Presence
+                        Find a Companion
                         <span className="group-hover:translate-x-1 transition-transform">→</span>
                     </button>
                     {!userData && (
