@@ -160,7 +160,7 @@ const NavBar = () => {
                     suppressHydrationWarning
                     className='bg-white text-black px-6 py-2.5 rounded-full font-bold hover:bg-gray-200 transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5 text-xs uppercase tracking-wider'
                   >
-                    Be a Presence 
+                    Be a Companion 
                   </button>
                 )
             }
@@ -183,10 +183,13 @@ const NavBar = () => {
                 </button>
             </div>
             <ul className="flex flex-col p-4 gap-2 font-medium">
+                {links.length > 0 && (
+                    <li className="px-5 py-1 text-xs font-bold text-gray-400 uppercase tracking-widest">Pick Your Mode</li>
+                )}
                 {links.map(link => (
                     <li key={link.path}>
-                        <Link 
-                            href={link.path} 
+                        <Link
+                            href={link.path}
                             onClick={() => setIsMenuOpen(false)}
                             className={`block px-5 py-3 rounded-xl transition-all ${pathname === link.path ? "bg-black text-white shadow-lg" : "text-gray-600 hover:bg-gray-50 hover:text-black"}`}
                         >
@@ -249,7 +252,7 @@ const NavBar = () => {
                     <>
                         <div className="h-px bg-gray-100 my-2 mx-2"></div>
                         <li>
-                            <Link href="/login" onClick={() => setIsMenuOpen(false)} className="block px-5 py-3 rounded-xl font-bold text-center transition-all bg-black text-white hover:bg-gray-800 shadow-md">Be a Presence</Link>
+                            <Link href="/login" onClick={() => setIsMenuOpen(false)} className="block px-5 py-3 rounded-xl font-bold text-center transition-all bg-black text-white hover:bg-gray-800 shadow-md">Be a Companion</Link>
                         </li>
                     </>
                 )}

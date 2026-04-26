@@ -21,7 +21,24 @@ const Chat = ({ bookingId }) => {
     useEffect(() => {
         if (!token || !bookingId) return;
 
-        // Initialize socket
+        let cancelled = false;
+
+        const loadHistory = async () => {
+            try {
+                const res = await axios.get(
+                    `${process.env.NEXT_PUBLIC_API_URL}/api/bookings/${bookingId}/messages`,
+                    { headers: { Authorization: `Bearer ${token}` } }
+                );
+                if (!cancelled) {
+                    setMessages(res.data.messages || []);
+                    scrollToBottom();
+                }
+            } catch (err) {
+                console.error("Failed to load chat history:", err);
+            }
+        };
+        loadHistory();
+
         const socketUrl = process.env.NEXT_PUBLIC_API_URL;
         const newSocket = io(socketUrl, {
             auth: { token },
@@ -30,6 +47,12 @@ const Chat = ({ bookingId }) => {
         });
 
         socketRef.current = newSocket;
+
+        const dedupe = (list, msg) => {
+            const msgId = msg._id?.toString();
+            if (msgId && list.some(m => m._id?.toString() === msgId)) return list;
+            return [...list, msg];
+        };
 
         newSocket.on('connect', () => {
             setConnectionStatus('Online');
@@ -42,12 +65,16 @@ const Chat = ({ bookingId }) => {
         });
 
         newSocket.on('previous_messages', (prevMessages) => {
-            setMessages(prevMessages);
+            if (cancelled) return;
+            setMessages(prev => {
+                if (prev.length >= (prevMessages?.length || 0)) return prev;
+                return prevMessages;
+            });
             scrollToBottom();
         });
 
         newSocket.on('receive_message', (message) => {
-            setMessages((prev) => [...prev, message]);
+            setMessages(prev => dedupe(prev, message));
             scrollToBottom();
         });
 
@@ -62,6 +89,7 @@ const Chat = ({ bookingId }) => {
         });
 
         return () => {
+            cancelled = true;
             newSocket.disconnect();
         };
     }, [bookingId, token, scrollToBottom]);
@@ -100,6 +128,8 @@ const Chat = ({ bookingId }) => {
 
     if (!userData) return null;
 
+    const refId = bookingId ? String(bookingId).slice(-6).toUpperCase() : '';
+
     return (
         <div className="flex flex-col h-[600px] w-full max-w-3xl mx-auto bg-white shadow-xl rounded-3xl overflow-hidden font-sans border border-gray-100">
             {/* Header */}
@@ -108,7 +138,9 @@ const Chat = ({ bookingId }) => {
                     <div className="w-10 h-10 bg-green-50 rounded-full flex items-center justify-center text-lg">💬</div>
                     <div>
                         <h2 className="font-bold text-gray-900 text-lg">Session Chat</h2>
-                        <p className="text-xs text-gray-500 font-medium">Private & Secure</p>
+                        <p className="text-xs text-gray-500 font-medium">
+                            Private & Secure {refId && <span className="ml-1 font-mono text-gray-400">· #{refId}</span>}
+                        </p>
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -166,6 +198,7 @@ const Chat = ({ bookingId }) => {
                     type="text"
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
+                    maxLength={1000}
                     placeholder={isCancelled ? "Session has been cancelled" : "Type your message..."}
                     disabled={isCancelled || connectionStatus !== 'Online'}
                     className="flex-1 px-4 py-3 bg-gray-50 border border-transparent focus:bg-white focus:border-gray-200 rounded-xl outline-none transition-all font-medium text-gray-700 placeholder:text-gray-400 disabled:bg-gray-100 disabled:cursor-not-allowed"

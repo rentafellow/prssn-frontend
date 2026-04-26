@@ -6,7 +6,7 @@ import { useAuth } from '../../context/AuthContext';
 
 const Hero = () => {
   const router = useRouter()
-  const { userData } = useAuth()
+  const { userData, token } = useAuth()
   
   return (
     <div className='relative w-full overflow-hidden bg-[#fafafa]'>
@@ -52,11 +52,11 @@ const Hero = () => {
                         <span className="group-hover:translate-x-1 transition-transform">→</span>
                     </button>
                     {!userData && (
-                        <button 
-                            onClick={() => router.push('/onboarding')}
+                        <button
+                            onClick={() => router.push(token ? '/onboarding' : '/login')}
                             className='px-8 py-4 bg-white text-gray-900 border border-gray-200 rounded-full font-bold text-lg hover:bg-gray-50 hover:border-black transition-all w-full sm:w-auto'
                         >
-                            Become a Companion
+                            Be a Companion
                         </button>
                     )}
                 </div>

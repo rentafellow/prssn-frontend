@@ -46,14 +46,14 @@ export default function SessionPage() {
         );
     }
 
-    if (userData.role !== 'fellow' && booking?.paymentStatus !== 'paid') {
+    if (userData.role !== 'companion' && booking?.paymentStatus !== 'paid') {
          return (
              <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4 font-sans text-center">
                  <div className="bg-white p-8 rounded-3xl shadow-xl max-w-md w-full border border-gray-100">
                      <span className="text-4xl mb-4 block">🔒</span>
                      <h1 className="text-2xl font-bold text-gray-900 mb-2">Payment Required</h1>
                      <p className="text-gray-500 mb-8">
-                         You must complete the payment to join this session with <span className="font-bold text-gray-900">{booking?.fellowId?.fullName || 'the fellow'}</span>.
+                         You must complete the payment to join this session with <span className="font-bold text-gray-900">{booking?.companionId?.fullName || 'the companion'}</span>.
                      </p>
                      <button 
                          onClick={() => router.push('/my-bookings')} 
