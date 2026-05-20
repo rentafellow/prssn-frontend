@@ -24,7 +24,11 @@ const Avatar = ({ src, name, size = "w-10 h-10" }) => (
 const PaymentDetailModal = ({ payment, onClose }) => {
   if (!payment) return null;
   const fmt = (d) => d ? new Date(d).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }) : '—';
-  const durationLabel = payment.duration === '30' ? '30 min' : payment.duration === '90' ? '90 min' : '60 min';
+  const durationLabel = (() => {
+    const m = parseInt(payment.duration, 10) || 0;
+    if (m >= 60 && m % 60 === 0) return `${m / 60} hr${m / 60 > 1 ? 's' : ''}`;
+    return `${m} min`;
+  })();
 
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" onClick={onClose}>

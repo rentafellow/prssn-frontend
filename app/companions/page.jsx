@@ -352,8 +352,20 @@ const CompanionsContent = () => {
 
 const CompanionCard = ({ companion }) => {
     // Determine image URL
-    const imageUrl = companion.profilePhotoUrl || companion.profilePhoto || null;
-    
+    const initialImageUrl = companion.profilePhotoUrl || companion.profilePhoto || null;
+    const [imgFailed, setImgFailed] = useState(false);
+    const imageUrl = imgFailed ? null : initialImageUrl;
+
+    // Initials fallback
+    const displayName = companion.fullName || companion.username || '?';
+    const initials = displayName
+        .split(/\s+/)
+        .map(s => s[0])
+        .filter(Boolean)
+        .slice(0, 2)
+        .join('')
+        .toUpperCase();
+
     // Check available days
     const isAvailableToday = (() => {
         if (!companion.availability) return false;
@@ -368,20 +380,21 @@ const CompanionCard = ({ companion }) => {
     return (
         <Link href={`/companions/${companion._id || companion.id}`} className="block group h-full">
             <div className="relative bg-white border border-gray-100 rounded-[2rem] overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 h-full flex flex-col">
-                
+
                 {/* Image Section */}
-                <div className="w-full aspect-[4/3] relative overflow-hidden bg-gray-50">
+                <div className="w-full aspect-[4/3] relative overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
                     {imageUrl ? (
                         /* eslint-disable-next-line @next/next/no-img-element */
-                        <img 
-                            src={imageUrl} 
-                            alt={companion.fullName} 
+                        <img
+                            src={imageUrl}
+                            alt={displayName}
                             loading="lazy"
+                            onError={() => setImgFailed(true)}
                             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                         />
                     ) : (
-                        <div className="w-full h-full flex items-center justify-center text-4xl opacity-20 bg-gradient-to-br from-gray-50 to-gray-100">
-                            👤
+                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-700 to-gray-900 text-white">
+                            <span className="text-5xl font-bold tracking-wider">{initials || '👤'}</span>
                         </div>
                     )}
                     

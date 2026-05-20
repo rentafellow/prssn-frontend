@@ -15,6 +15,7 @@ const FellowProfile = () => {
     const [fellow, setFellow] = useState(null);
     const [loading, setLoading] = useState(true);
     const [step, setStep] = useState('review'); // review -> hesitation -> success
+    const [imgFailed, setImgFailed] = useState(false);
 
     // Hesitation Checkboxes
     const [checks, setChecks] = useState({
@@ -139,11 +140,26 @@ const FellowProfile = () => {
                      {/* Image Card */}
                      <div className="bg-white rounded-[2.5rem] p-3 shadow-xl shadow-gray-200/50 mb-6">
                         <div className="aspect-[4/5] rounded-[2rem] overflow-hidden relative bg-gray-100">
-                             {fellow.profilePhoto ? (
+                             {fellow.profilePhoto && !imgFailed ? (
                                 /* eslint-disable-next-line @next/next/no-img-element */
-                                <img src={fellow.profilePhoto} alt="Fellow Profile" className="w-full h-full object-cover" />
+                                <img
+                                    src={fellow.profilePhoto}
+                                    alt={fellow.fullName || 'Fellow Profile'}
+                                    onError={() => setImgFailed(true)}
+                                    className="w-full h-full object-cover"
+                                />
                              ) : (
-                                <div className="w-full h-full flex items-center justify-center text-6xl text-gray-200">👤</div>
+                                <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-700 to-gray-900 text-white">
+                                    <span className="text-7xl font-bold tracking-wider">
+                                        {(fellow.fullName || fellow.username || '?')
+                                            .split(/\s+/)
+                                            .map(s => s[0])
+                                            .filter(Boolean)
+                                            .slice(0, 2)
+                                            .join('')
+                                            .toUpperCase() || '?'}
+                                    </span>
+                                </div>
                              )}
                              
                              {/* Floating Price Tag */}
@@ -244,14 +260,19 @@ const FellowProfile = () => {
                                 <div>
                                     <label className="block text-xs font-bold text-gray-500 mb-2 uppercase">Duration</label>
                                     <div className="flex gap-2">
-                                        {['30', '60', '90'].map((d) => (
-                                            <button 
-                                                key={d}
-                                                onClick={() => setDuration(d)}
-                                                className={`flex-1 py-2 rounded-lg text-sm font-bold border transition-all ${duration === d ? 'bg-black text-white border-black' : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300'}`}
+                                        {[
+                                            { value: '60', label: '1 hour' },
+                                            { value: '120', label: '2 hours' },
+                                            { value: '180', label: '3 hours' },
+                                            { value: '240', label: '4 hours' }
+                                        ].map((d) => (
+                                            <button
+                                                key={d.value}
+                                                onClick={() => setDuration(d.value)}
+                                                className={`flex-1 py-2 rounded-lg text-sm font-bold border transition-all ${duration === d.value ? 'bg-black text-white border-black' : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300'}`}
                                                 suppressHydrationWarning={true}
                                             >
-                                                {d} min
+                                                {d.label}
                                             </button>
                                         ))}
                                     </div>

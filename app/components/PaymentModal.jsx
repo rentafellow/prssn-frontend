@@ -155,7 +155,7 @@ const PaymentModal = ({ booking, onClose, onSuccess }) => {
                     <div className="mt-4 bg-gray-50 py-3 rounded-xl border border-gray-100">
                         <p className="text-sm text-gray-400 uppercase tracking-widest font-bold mb-1">Total Amount</p>
                         <p className="text-3xl font-bold text-green-600">
-                           ₹{(booking.pricePerHour * (booking.duration === '30' ? 0.5 : booking.duration === '90' ? 1.5 : 1)).toFixed(2)}
+                           ₹{(booking.pricePerHour * ((parseInt(booking.duration, 10) || 60) / 60)).toFixed(2)}
                         </p>
                     </div>
                 </div>

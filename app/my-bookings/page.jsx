@@ -184,7 +184,11 @@ const MyBookings = () => {
                                                📅 {new Date(booking.createdAt).toLocaleDateString()}
                                            </span>
                                            <span className="flex items-center gap-1 bg-gray-50 px-3 py-1.5 rounded-full border border-gray-100">
-                                               ⏳ {booking.duration} mins
+                                               ⏳ {(() => {
+                                                   const m = parseInt(booking.duration, 10) || 0;
+                                                   if (m >= 60 && m % 60 === 0) return `${m / 60} hr${m / 60 > 1 ? 's' : ''}`;
+                                                   return `${m} mins`;
+                                               })()}
                                            </span>
                                            <span className="flex items-center gap-1 bg-gray-50 px-3 py-1.5 rounded-full border border-gray-100">
                                                💰 ₹{booking.pricePerHour}
