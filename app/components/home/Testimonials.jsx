@@ -21,45 +21,45 @@ export default function Testimonials() {
     const cardsData = [
         {
             seed: 1,
-            name: 'Briar Martin',
-            handle: '@neilstellar',
+            name: 'Mohan Iyer',
+            handle: '@mohan_iyer',
             date: 'April 2025',
-            text: "prsnn. made finding a companion for the gala absolutely effortless. Highly recommended!"
+            text: "prsnn. made finding a companion for my cousin's wedding absolutely effortless. Highly recommended!"
         },
         {
             seed: 2,
-            name: 'Avery Johnson',
-            handle: '@averywrites',
+            name: 'Rohan Sharma',
+            handle: '@rohanwrites',
             date: 'May 2025',
-            text: "The verification process gave me total peace of mind. Found a great tennis partner in minutes."
+            text: "The verification process gave me total peace of mind. Found a great cricket partner in minutes."
         },
         {
             seed: 3,
-            name: 'Jordan Lee',
-            handle: '@jordantalks',
+            name: 'Aman Verma',
+            handle: '@amantalks',
             date: 'June 2025',
             text: "Honestly surprised by how professional everyone is. It's a game changer for my weekend plans."
         },
         {
             seed: 4,
-            name: 'Sarah Wilson',
-            handle: '@sarahmaps',
+            name: 'Priya Nair',
+            handle: '@priyamaps',
             date: 'July 2025',
-            text: "I was new to the city and prsnn. helped me explore knowing I had a trusted local with me."
+            text: "I was new to Bengaluru and prsnn. helped me explore knowing I had a trusted local with me."
         },
         {
             seed: 5,
-            name: 'David Chen',
-            handle: '@davidtravels',
+            name: 'Karan Mehta',
+            handle: '@karantravels',
             date: 'August 2025',
             text: "The platform is incredibly easy to use. Great design and even better people."
         },
         {
             seed: 6,
-            name: 'Emily Davis',
-            handle: '@emilyd_art',
+            name: 'Sneha Reddy',
+            handle: '@sneha_art',
             date: 'Sept 2025',
-            text: "I needed a body double for my studio work. The silence was perfect. exactly what I needed."
+            text: "I needed a quiet companion for my studio work. Calm, respectful and exactly what I needed."
         }
     ];
 

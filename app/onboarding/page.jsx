@@ -979,7 +979,6 @@ const OnboardingPage = () => {
                                         className="w-full px-4 py-3 bg-yellow-50 border-2 border-black text-gray-900 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none font-medium appearance-none"
                                     >
                                         <option value="" disabled>Select hourly rate</option>
-                                        <option value="1">₹1</option>
                                         <option value="399">₹399</option>
                                         <option value="499">₹499</option>
                                         <option value="699">₹699</option>
