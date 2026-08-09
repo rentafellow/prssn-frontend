@@ -311,12 +311,15 @@ const Login = () => {
         {/* LEFT — emotional branding */}
         <aside className="relative min-h-[42vh] lg:min-h-screen overflow-hidden">
           <Image
-            src="/herobg.png"
-            alt=""
+            src="/auth-side.webp"
+            alt="Quiet company in a calm café"
             fill
             priority
-            sizes="(max-width:1024px) 100vw, 55vw"
-            className="object-cover object-center animate-kenburns"
+            quality={80}
+            sizes="(max-width:1024px) 100vw, 50vw"
+            placeholder="blur"
+            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIRITMUFRYf/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AzvG9p3G3w4m2uJY45ZBlVYgFs+tV7i7ku7mWeZizyMSxJ9TVVJJI5vZ2d3d3d3d3f//Z"
+            className="object-cover object-[center_30%] animate-kenburns"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/65 to-ink/35" />
           <div className="absolute inset-0 bg-gradient-to-r from-ink/50 via-transparent to-transparent" />
