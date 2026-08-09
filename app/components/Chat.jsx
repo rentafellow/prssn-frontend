@@ -1,0 +1,220 @@
+
+"use client";
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import io from 'socket.io-client';
+import axios from 'axios';
+import { useAuth } from '../context/AuthContext';
+
+const Chat = ({ bookingId }) => {
+    const { userData, token } = useAuth();
+    const [messages, setMessages] = useState([]);
+    const [newMessage, setNewMessage] = useState('');
+    const socketRef = useRef(null);
+    const messagesEndRef = useRef(null);
+    const [connectionStatus, setConnectionStatus] = useState('Connecting...');
+    const [isCancelled, setIsCancelled] = useState(false);
+
+    const scrollToBottom = useCallback(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, []);
+
+    useEffect(() => {
+        if (!token || !bookingId) return;
+
+        let cancelled = false;
+
+        const loadHistory = async () => {
+            try {
+                const res = await axios.get(
+                    `${process.env.NEXT_PUBLIC_API_URL}/api/bookings/${bookingId}/messages`,
+                    { headers: { Authorization: `Bearer ${token}` } }
+                );
+                if (!cancelled) {
+                    setMessages(res.data.messages || []);
+                    scrollToBottom();
+                }
+            } catch (err) {
+                console.error("Failed to load chat history:", err);
+            }
+        };
+        loadHistory();
+
+        const socketUrl = process.env.NEXT_PUBLIC_API_URL;
+        const newSocket = io(socketUrl, {
+            auth: { token },
+            reconnection: true,
+            reconnectionAttempts: 5,
+        });
+
+        socketRef.current = newSocket;
+
+        const dedupe = (list, msg) => {
+            const msgId = msg._id?.toString();
+            if (msgId && list.some(m => m._id?.toString() === msgId)) return list;
+            return [...list, msg];
+        };
+
+        newSocket.on('connect', () => {
+            setConnectionStatus('Online');
+            newSocket.emit('join_room', { bookingId });
+        });
+
+        newSocket.on('connect_error', (err) => {
+            console.error("Connection Error:", err.message);
+            setConnectionStatus('Connection Error');
+        });
+
+        newSocket.on('previous_messages', (prevMessages) => {
+            if (cancelled) return;
+            setMessages(prev => {
+                if (prev.length >= (prevMessages?.length || 0)) return prev;
+                return prevMessages;
+            });
+            scrollToBottom();
+        });
+
+        newSocket.on('receive_message', (message) => {
+            setMessages(prev => dedupe(prev, message));
+            scrollToBottom();
+        });
+
+        newSocket.on('session_cancelled', () => {
+            setIsCancelled(true);
+            setConnectionStatus('Cancelled');
+        });
+
+        newSocket.on('error', (error) => {
+            console.error('Socket logic error:', error);
+            alert(typeof error === 'string' ? error : 'An error occurred');
+        });
+
+        return () => {
+            cancelled = true;
+            newSocket.disconnect();
+        };
+    }, [bookingId, token, scrollToBottom]);
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [messages, scrollToBottom]);
+
+    const handleSendMessage = (e) => {
+        e.preventDefault();
+        if (newMessage.trim() && socketRef.current && !isCancelled) {
+            socketRef.current.emit('send_message', { bookingId, message: newMessage });
+            setNewMessage('');
+        }
+    };
+
+    const handleCancelSession = async () => {
+        if (!window.confirm("Are you sure you want to cancel this session? You won't be able to chat anymore.")) {
+            return;
+        }
+
+        try {
+            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/bookings/${bookingId}/cancel`, {}, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setIsCancelled(true);
+            setConnectionStatus('Cancelled');
+            if (socketRef.current) {
+                socketRef.current.emit('cancel_session', { bookingId });
+            }
+        } catch (error) {
+            console.error("Failed to cancel session:", error);
+            alert("Failed to cancel session. Please try again.");
+        }
+    };
+
+    if (!userData) return null;
+
+    const refId = bookingId ? String(bookingId).slice(-6).toUpperCase() : '';
+
+    return (
+        <div className="flex flex-col h-[600px] w-full max-w-3xl mx-auto bg-white shadow-xl rounded-3xl overflow-hidden font-sans border border-gray-100">
+            {/* Header */}
+            <div className="bg-white/80 backdrop-blur-md p-4 flex justify-between items-center border-b border-gray-100">
+                <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-green-50 rounded-full flex items-center justify-center text-lg">💬</div>
+                    <div>
+                        <h2 className="font-bold text-gray-900 text-lg">Session Chat</h2>
+                        <p className="text-xs text-gray-500 font-medium">
+                            Private & Secure {refId && <span className="ml-1 font-mono text-gray-400">· #{refId}</span>}
+                        </p>
+                    </div>
+                </div>
+                <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 bg-gray-50 px-3 py-1.5 rounded-full border border-gray-100">
+                        <div className={`w-2 h-2 rounded-full ${connectionStatus === 'Online' && !isCancelled ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></div>
+                        <span className="text-xs font-bold text-gray-600 uppercase tracking-wider">{isCancelled ? 'Cancelled' : connectionStatus}</span>
+                    </div>
+                    {!isCancelled && (
+                        <button
+                            onClick={handleCancelSession}
+                            className="px-3 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 rounded-full text-xs font-bold transition-all shadow-sm"
+                        >
+                            Cancel Session
+                        </button>
+                    )}
+                </div>
+            </div>
+            
+            {/* Messages Area */}
+            <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-gray-50/50">
+                 
+                {messages.length === 0 ? (
+                    <div className="text-center text-gray-400 mt-20 flex flex-col items-center">
+                        <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4 text-2xl grayscale opacity-50">👋</div>
+                        <p className="text-sm font-medium">No messages yet</p>
+                        <p className="text-xs">Start the conversation!</p>
+                    </div>
+                ) : (
+                    messages.map((msg, index) => {
+                        const currentUserId = userData._id || userData.id || userData.userId;
+                        const senderId = typeof msg.senderId === 'object' ? msg.senderId._id : msg.senderId;
+                        const isMe = String(senderId) === String(currentUserId);
+
+                        return (
+                            <div key={index} className={`flex ${isMe ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-2 duration-300`}>
+                                <div className={`max-w-[80%] md:max-w-[70%] p-4 relative shadow-sm
+                                    ${isMe ? 'bg-green-600 text-white rounded-2xl rounded-tr-sm' : 'bg-white text-gray-800 border border-gray-100 rounded-2xl rounded-tl-sm'}`}>
+                                    
+                                    {!isMe && <p className="text-[10px] font-bold text-gray-400 mb-1 uppercase tracking-wider">Companion</p>}
+                                    <p className={`text-sm md:text-base font-medium whitespace-pre-wrap leading-relaxed ${isMe ? 'text-white' : 'text-gray-800'}`}>{msg.content}</p>
+                                    <p className={`text-[10px] font-bold mt-2 text-right uppercase tracking-wider ${isMe ? 'text-green-200' : 'text-gray-300'}`}>
+                                        {new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                                    </p>
+                                </div>
+                            </div>
+                        );
+                    })
+                )}
+                <div ref={messagesEndRef} />
+            </div>
+
+            {/* Input Area */}
+            <form onSubmit={handleSendMessage} className="p-4 bg-white border-t border-gray-100 flex gap-3 items-center">
+                <input
+                    type="text"
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    maxLength={1000}
+                    placeholder={isCancelled ? "Session has been cancelled" : "Type your message..."}
+                    disabled={isCancelled || connectionStatus !== 'Online'}
+                    className="flex-1 px-4 py-3 bg-gray-50 border border-transparent focus:bg-white focus:border-gray-200 rounded-xl outline-none transition-all font-medium text-gray-700 placeholder:text-gray-400 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                />
+                <button 
+                    type="submit"
+                    disabled={!newMessage.trim() || connectionStatus !== 'Online' || isCancelled}
+                    className="p-3 bg-black text-white rounded-xl hover:bg-gray-800 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:scale-100 transition-all shadow-lg shadow-gray-200 disabled:cursor-not-allowed"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                      <path d="M3.478 2.404a.75.75 0 0 0-.926.941l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.404Z" />
+                    </svg>
+                </button>
+            </form>
+        </div>
+    );
+};
+
+export default Chat;

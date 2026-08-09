@@ -1,0 +1,16 @@
+﻿
+> frontend@0.1.0 lint
+> eslint
+
+
+A:\FreeLance Projects\RentAFellow\frontend\src\tests\components\NavBar.test.jsx
+  1:26  warning  'fireEvent' is defined but never used     @typescript-eslint/no-unused-vars
+  4:10  warning  'AuthProvider' is defined but never used  @typescript-eslint/no-unused-vars
+  5:10  warning  'usePathname' is defined but never used   @typescript-eslint/no-unused-vars
+
+A:\FreeLance Projects\RentAFellow\frontend\src\tests\context\AuthContext.test.jsx
+   4:8   warning  'axios' is defined but never used          @typescript-eslint/no-unused-vars
+  14:11  warning  'user' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+Γ£û 5 problems (0 errors, 5 warnings)
+
