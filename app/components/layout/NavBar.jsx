@@ -15,7 +15,6 @@ const NavBarInner = () => {
   const router = useRouter();
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const { token, logout, userData } = useAuth();
 
   const isSpecialRole =
@@ -23,16 +22,14 @@ const NavBarInner = () => {
   const showLinks = !isSpecialRole;
   const links = showLinks ? marketingLinks : [];
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 16);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  useEffect(() => {
+  // Close the drawer whenever the route changes (covers browser back/forward,
+  // not just link clicks). Adjusting state during render instead of in an
+  // effect avoids the extra render pass the react-hooks lint rule flags.
+  const [lastPath, setLastPath] = useState(pathname);
+  if (lastPath !== pathname) {
+    setLastPath(pathname);
     setIsMenuOpen(false);
-  }, [pathname]);
+  }
 
   useEffect(() => {
     if (!isMenuOpen) return;
@@ -52,12 +49,10 @@ const NavBarInner = () => {
   return (
     <>
       <div className="fixed top-0 inset-x-0 z-50 flex justify-center pt-3 md:pt-4 px-3 pointer-events-none">
+        {/* Always the dark pill. The old transparent top-of-page state relied on
+            sitting over the dark hero; on any pale page its white text vanished. */}
         <header
-          className={`pointer-events-auto w-full max-w-6xl rounded-full border transition-[box-shadow,background,border-color,backdrop-filter,transform] duration-300 ${
-            scrolled
-              ? "bg-ink/75 border-white/15 shadow-[0_12px_40px_-12px_rgba(14,17,13,0.55)] backdrop-blur-xl scale-[0.99]"
-              : "bg-white/5 border-white/15 backdrop-blur-md shadow-none"
-          }`}
+          className="pointer-events-auto w-full max-w-6xl rounded-full border bg-ink/75 border-white/15 shadow-[0_12px_40px_-12px_rgba(14,17,13,0.55)] backdrop-blur-xl"
         >
           <div className="flex items-center justify-between gap-3 h-14 md:h-[3.75rem] px-3.5 md:px-5">
             <div className="flex items-center gap-2 min-w-0">
