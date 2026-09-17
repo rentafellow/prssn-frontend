@@ -6,6 +6,7 @@ import { AuthProvider } from "./context/AuthContext";
 import VerificationGuard from "./components/common/VerificationGuard";
 import GlobalClickGuard from "./components/auth/GlobalClickGuard";
 import { NotificationProvider } from "./context/NotificationContext";
+import EnvBanner from "./components/common/EnvBanner";
 
 const syne = Syne({
   variable: "--font-syne",
@@ -47,6 +48,7 @@ export default function RootLayout({ children }) {
             <NavBar />
             {children}
             <Footer />
+            <EnvBanner />
           </NotificationProvider>
         </AuthProvider>
       </body>
