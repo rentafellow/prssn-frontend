@@ -1,54 +1,107 @@
 "use client";
-import React, { useState, useEffect, Suspense } from "react";
+import React, { useState, useEffect, useMemo, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import axios from "axios";
 import Alert from "../components/common/Alert";
+import { generateStrongPassword } from "../utils/password";
+import AuthShell, { AuthField, AuthSubmit, EyeToggle, IconMail, IconLock } from "../components/auth/AuthShell";
+
+// Same rules as sign-up, so a reset can't produce a password sign-up would reject.
+const validatePassword = (pwd) => {
+    if (pwd.length < 8) return "Password must be at least 8 characters long";
+    if (!/[A-Z]/.test(pwd)) return "Add at least one uppercase letter";
+    if (!/[a-z]/.test(pwd)) return "Add at least one lowercase letter";
+    if (!/[0-9]/.test(pwd)) return "Add at least one number";
+    if (!/[!@#$%^&*(),.?":{}|<>]/.test(pwd)) return "Add at least one symbol (!@#$%^&*…)";
+    return null;
+};
+
+const strengthOf = (pwd) => {
+    if (!pwd) return { label: "", color: "bg-line", width: "0%" };
+    let score = 0;
+    if (pwd.length >= 8) score += 1;
+    if (pwd.length >= 12) score += 1;
+    if (/[A-Z]/.test(pwd) && /[a-z]/.test(pwd)) score += 1;
+    if (/[0-9]/.test(pwd)) score += 1;
+    if (/[!@#$%^&*(),.?":{}|<>]/.test(pwd)) score += 1;
+    if (score <= 2) return { label: "Weak", color: "bg-clay", width: "33%" };
+    if (score <= 3) return { label: "Good", color: "bg-amber-500", width: "66%" };
+    return { label: "Strong", color: "bg-moss", width: "100%" };
+};
 
 const ResetPasswordContent = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
-    
+
     const [email, setEmail] = useState("");
     const [otp, setOtp] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
-    
     const [loading, setLoading] = useState(false);
-    const [message, setMessage] = useState(null); 
+    const [message, setMessage] = useState(null);
+
+    const strength = useMemo(() => strengthOf(newPassword), [newPassword]);
 
     useEffect(() => {
         const emailParam = searchParams.get("email");
-        if (emailParam) {
-            setEmail(emailParam);
-        }
+        if (emailParam) setEmail(emailParam);
     }, [searchParams]);
+
+    const suggestPassword = async () => {
+        const suggested = generateStrongPassword();
+        setNewPassword(suggested);
+        setConfirmPassword(suggested);
+        setShowPassword(true);
+        let copied = false;
+        try {
+            await navigator.clipboard.writeText(suggested);
+            copied = true;
+        } catch {
+            // clipboard unavailable — the password is visible on screen anyway
+        }
+        setMessage({
+            type: "success",
+            title: "Strong password ready",
+            message: copied
+                ? "Copied to your clipboard. Save it in a password manager before you continue."
+                : "Save it in a password manager before you continue.",
+        });
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setMessage(null);
+
+        if (otp.length !== 6) {
+            setMessage({ type: "error", title: "Check the code", message: "The reset code is 6 digits." });
+            return;
+        }
+        const problem = validatePassword(newPassword);
+        if (problem) {
+            setMessage({ type: "error", title: "Password too weak", message: problem });
+            return;
+        }
         if (newPassword !== confirmPassword) {
-            setMessage({ type: "error", title: "Error", message: "Passwords do not match" });
+            setMessage({ type: "error", title: "Passwords don't match", message: "Both password fields must be the same." });
             return;
         }
 
         setLoading(true);
-        setMessage(null);
-
         try {
             await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/reset-password`, {
                 email,
                 otp,
-                newPassword
+                newPassword,
             });
-            setMessage({ type: "success", title: "Success!", message: "Password reset successfully. Redirecting to login..." });
-            setTimeout(() => {
-                router.push("/login");
-            }, 2000);
+            setMessage({ type: "success", title: "Password updated", message: "Redirecting to sign in…" });
+            setTimeout(() => router.push("/login"), 1500);
         } catch (error) {
-            setMessage({ 
-                type: "error", 
-                title: "Error", 
-                message: error.response?.data?.message || "Failed to reset password." 
+            setMessage({
+                type: "error",
+                title: "Couldn't reset the password",
+                message: error.response?.data?.message || "Check the code and try again.",
             });
         } finally {
             setLoading(false);
@@ -56,101 +109,124 @@ const ResetPasswordContent = () => {
     };
 
     return (
-        <div className="min-h-screen md:h-screen w-full flex items-center justify-center relative bg-[#F9F5D7] p-4 sm:p-6">
-             <button 
-                onClick={() => router.push('/login')}
-                className="absolute top-6 right-6 z-50 p-2 rounded-full border-2 border-black text-black hover:bg-black hover:text-white transition-all shadow-sm"
-                aria-label="Back to Login"
-            >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-                </svg>
-            </button>
-
+        <AuthShell
+            eyebrow="Account recovery"
+            title="Set a new password"
+            subtitle={
+                email
+                    ? <>Enter the 6-digit code we sent to <span className="text-ink font-semibold break-all">{email}</span> and choose a new password.</>
+                    : "Enter your email, the 6-digit code we sent, and a new password."
+            }
+            footer={
+                <>
+                    Need a new code?{" "}
+                    <Link href="/forgot-password" className="font-semibold text-moss hover:text-ink transition-colors">
+                        Request one
+                    </Link>
+                </>
+            }
+        >
             {message && (
-                <Alert 
-                    type={message.type} 
-                    title={message.title} 
-                    message={message.message} 
-                    onClose={() => setMessage(null)} 
+                <Alert
+                    type={message.type}
+                    title={message.title}
+                    message={message.message}
+                    onClose={() => setMessage(null)}
                 />
             )}
 
-            <div className="w-full max-w-md bg-[#FCFCE4] rounded-[2rem] shadow-2xl overflow-hidden border-2 border-black p-8 md:p-12">
-                <h2 className="text-3xl font-black text-[#2A332C] mb-4 text-center uppercase tracking-tight">Reset Password</h2>
-                <p className="text-center text-gray-600 mb-8">Enter the OTP and your new password.</p>
+            <form onSubmit={handleSubmit} className="space-y-5">
+                <AuthField
+                    id="email"
+                    label="Email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@example.com"
+                    icon={IconMail}
+                    required
+                    autoComplete="email"
+                />
 
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div className="group relative">
-                        <input
-                            type="email"
-                            required
-                            placeholder="Email Address"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            className="w-full px-4 py-3 bg-[#F4F6E5] border-2 border-transparent focus:border-[#4B6351] rounded-xl focus:outline-none transition-all text-sm font-medium placeholder-gray-500 text-black"
-                        />
-                    </div>
-                    <div className="group relative">
-                        <input
-                            type="text"
-                            required
-                            placeholder="Enter 6-digit OTP"
-                            value={otp}
-                            onChange={(e) => setOtp(e.target.value)}
-                            maxLength={6}
-                            className="w-full px-4 py-3 bg-[#F4F6E5] border-2 border-transparent focus:border-[#4B6351] rounded-xl focus:outline-none transition-all text-sm font-medium placeholder-gray-500 text-black tracking-widest text-center"
-                        />
-                    </div>
-                    
-                    <div className="group relative">
-                        <input
-                            type={showPassword ? "text" : "password"}
-                            required
-                            placeholder="New Password"
-                            value={newPassword}
-                            onChange={(e) => setNewPassword(e.target.value)}
-                            className="w-full px-4 py-3 bg-[#F4F6E5] border-2 border-transparent focus:border-[#4B6351] rounded-xl focus:outline-none transition-all text-sm font-medium placeholder-gray-500 text-black"
-                        />
+                <AuthField
+                    id="otp"
+                    label="6-digit code"
+                    type="text"
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                    placeholder="••••••"
+                    required
+                    inputMode="numeric"
+                    autoComplete="one-time-code"
+                    maxLength={6}
+                    autoFocus={!!email}
+                    className="!pl-5 text-center font-display text-2xl font-semibold tracking-[0.45em] placeholder:tracking-[0.45em] placeholder:text-ink/20"
+                />
+
+                <AuthField
+                    id="newPassword"
+                    label="New password"
+                    type={showPassword ? "text" : "password"}
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="••••••••"
+                    icon={IconLock}
+                    required
+                    autoComplete="new-password"
+                    rightSlot={<EyeToggle shown={showPassword} onToggle={() => setShowPassword((v) => !v)} />}
+                />
+
+                <div className="space-y-2 -mt-1" aria-live="polite">
+                    {newPassword.length > 0 && (
+                        <div className="h-1.5 rounded-full bg-mist-deep overflow-hidden">
+                            <div
+                                className={`h-full rounded-full transition-all duration-500 ease-out ${strength.color}`}
+                                style={{ width: strength.width }}
+                            />
+                        </div>
+                    )}
+                    <div className="flex items-center justify-between gap-3">
+                        <p className="text-xs font-semibold text-ink/50">
+                            {newPassword.length > 0 ? (
+                                <>Password strength: <span className="text-ink">{strength.label}</span></>
+                            ) : (
+                                <>At least 8 characters with a capital, a number and a symbol</>
+                            )}
+                        </p>
                         <button
                             type="button"
-                            onClick={() => setShowPassword(!showPassword)}
-                            className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-[#4B6351] transition-colors"
+                            onClick={suggestPassword}
+                            className="shrink-0 text-xs font-semibold text-moss hover:text-ink underline underline-offset-4 decoration-moss/40 hover:decoration-ink transition-colors"
                         >
-                            {showPassword ? "Hide" : "Show"}
+                            Suggest a strong password
                         </button>
                     </div>
+                </div>
 
-                     <div className="group relative">
-                        <input
-                            type={showPassword ? "text" : "password"}
-                            required
-                            placeholder="Confirm New Password"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                            className="w-full px-4 py-3 bg-[#F4F6E5] border-2 border-transparent focus:border-[#4B6351] rounded-xl focus:outline-none transition-all text-sm font-medium placeholder-gray-500 text-black"
-                        />
-                    </div>
+                <AuthField
+                    id="confirmPassword"
+                    label="Confirm new password"
+                    type={showPassword ? "text" : "password"}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="••••••••"
+                    icon={IconLock}
+                    required
+                    autoComplete="new-password"
+                />
 
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className="w-full mt-4 bg-[#572bf1] text-white py-3 rounded-lg font-black uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,0.2)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-none transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed text-sm"
-                    >
-                        {loading ? "Resetting..." : "RESET PASSWORD"}
-                    </button>
-                </form>
-            </div>
-        </div>
+                <AuthSubmit loading={loading} loadingText="Updating…">
+                    Update password
+                </AuthSubmit>
+            </form>
+        </AuthShell>
     );
 };
 
-const ResetPassword = () => {
-    return (
-        <Suspense fallback={<div>Loading...</div>}>
-            <ResetPasswordContent />
-        </Suspense>
-    );
-};
+const ResetPassword = () => (
+    <Suspense fallback={<div className="min-h-screen bg-mist" />}>
+        <ResetPasswordContent />
+    </Suspense>
+);
 
 export default ResetPassword;

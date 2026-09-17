@@ -43,7 +43,11 @@ const NavBarInner = () => {
     };
   }, [isMenuOpen]);
 
-  if (pathname === "/login") return null;
+  // Focused auth pages carry their own frame and close button; the marketing
+  // nav's white-on-hero styling would be unreadable over their pale ground.
+  if (["/login", "/verify-email", "/forgot-password", "/reset-password"].includes(pathname)) {
+    return null;
+  }
 
   return (
     <>
