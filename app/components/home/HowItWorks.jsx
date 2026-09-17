@@ -14,7 +14,7 @@ const steps = [
   {
     n: '02',
     title: 'Select Verified Companion',
-    desc: 'Browse government-verified profiles, availability, and reviews. Book a public meetup that fits your day.',
+    desc: 'Browse manually verified profiles, availability, and reviews. Book a public meetup that fits your day.',
     image: '/step2.png',
   },
   {

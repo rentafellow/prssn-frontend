@@ -4,42 +4,42 @@ import SectionHeader from '../common/SectionHeader';
 
 const cardsData = [
   {
-    name: 'Mohan Iyer',
+    name: 'Rahul Sharma',
     place: 'Mumbai',
     mode: "Don't Go Alone",
     rating: 5,
     text: "Needed someone for my cousin's wedding so I wouldn't walk in alone. Booked, met at the venue, left after dinner. Felt steady the whole time.",
   },
   {
-    name: 'Rohan Sharma',
+    name: 'Ananya Singh',
     place: 'Bangalore',
     mode: 'Explore Together',
     rating: 5,
     text: 'Verification gave me peace of mind. Found a walking partner near Cubbon in minutes — no weird energy, just matched pace.',
   },
   {
-    name: 'Aman Verma',
+    name: 'Amit Kumar',
     place: 'Delhi',
     mode: 'Sit With Me',
     rating: 5,
     text: 'Body-doubling for late study sessions changed my week. Quiet company across the table. Zero pressure to perform.',
   },
   {
-    name: 'Priya Nair',
+    name: 'Priya Verma',
     place: 'Hyderabad',
     mode: "Don't Go Alone",
     rating: 5,
     text: "Café hopping alone used to drain me. Now I book when I need a soft plus-one. That's the whole product — and it works.",
   },
   {
-    name: 'Kabir Mehta',
+    name: 'Karan Gupta',
     place: 'Pune',
     mode: 'Quiet Company',
     rating: 5,
     text: 'The boundaries are written clearly. That honesty is why I keep coming back. Presence without guessing games.',
   },
   {
-    name: 'Sana Quereshi',
+    name: 'Neha Joshi',
     place: 'Chennai',
     mode: 'Explore Together',
     rating: 5,

@@ -8,7 +8,7 @@ const steps = [
     n: '01',
     title: 'Join the club',
     body: 'Create a profile in minutes. Share what you like — walks, silence, cafés, study. Every user is verified so you can focus on being yourself.',
-    points: ['Fast sign-up', 'ID verification', 'Privacy protected'],
+    points: ['Fast sign-up', 'Manual ID review', 'Privacy protected'],
   },
   {
     n: '02',

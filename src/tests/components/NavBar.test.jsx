@@ -21,7 +21,9 @@ describe('NavBar Component', () => {
     
     render(<NavBar />);
     
-    expect(screen.getAllByText(/Be a companion/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Find Companion/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Become Companion/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Login/i).length).toBeGreaterThan(0);
   });
 
   it('shows profile info when authenticated', () => {

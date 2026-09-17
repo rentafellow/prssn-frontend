@@ -6,9 +6,10 @@ import Link from "next/link";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import Alert from "../components/common/Alert";
+import { generateStrongPassword } from "../utils/password";
 
 const trustItems = [
-  "Government ID Verified Companions",
+  "Manually Verified Companions",
   "Public Meetups Only",
   "Leave Anytime",
   "Strict Community Guidelines",
@@ -189,6 +190,31 @@ const Login = () => {
       };
     }
     return { valid: true };
+  };
+
+  const suggestPassword = async () => {
+    const suggested = generateStrongPassword();
+    // Fill both fields and reveal them so the user can see what they got.
+    setPassword(suggested);
+    setConfirmPassword(suggested);
+    setShowPassword(true);
+    setShowConfirmPassword(true);
+
+    let copied = false;
+    try {
+      await navigator.clipboard.writeText(suggested);
+      copied = true;
+    } catch {
+      // Clipboard can be unavailable (insecure context, permissions). The
+      // password is visible on screen either way.
+    }
+    setAlert({
+      type: "success",
+      title: "Strong password ready",
+      message: copied
+        ? "Copied to your clipboard. Save it in a password manager before you continue."
+        : "Save it in a password manager before you continue.",
+    });
   };
 
   const onSubmitHandler = async (event) => {
@@ -430,18 +456,35 @@ const Login = () => {
                   }
                 />
 
-                {!isSignIn && password.length > 0 && (
+                {!isSignIn && (
                   <div className="space-y-2 -mt-1" aria-live="polite">
-                    <div className="h-1.5 rounded-full bg-mist-deep overflow-hidden">
-                      <div
-                        className={`h-full rounded-full transition-all duration-500 ease-out ${strength.color}`}
-                        style={{ width: strength.width }}
-                      />
+                    {password.length > 0 && (
+                      <div className="h-1.5 rounded-full bg-mist-deep overflow-hidden">
+                        <div
+                          className={`h-full rounded-full transition-all duration-500 ease-out ${strength.color}`}
+                          style={{ width: strength.width }}
+                        />
+                      </div>
+                    )}
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="text-xs font-semibold text-ink/50">
+                        {password.length > 0 ? (
+                          <>
+                            Password strength:{" "}
+                            <span className="text-ink">{strength.label}</span>
+                          </>
+                        ) : (
+                          <>At least 8 characters with a capital, a number and a symbol</>
+                        )}
+                      </p>
+                      <button
+                        type="button"
+                        onClick={suggestPassword}
+                        className="shrink-0 text-xs font-semibold text-moss hover:text-ink underline underline-offset-4 decoration-moss/40 hover:decoration-ink transition-colors"
+                      >
+                        Suggest a strong password
+                      </button>
                     </div>
-                    <p className="text-xs font-semibold text-ink/50">
-                      Password strength:{" "}
-                      <span className="text-ink">{strength.label}</span>
-                    </p>
                   </div>
                 )}
 

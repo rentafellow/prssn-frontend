@@ -5,8 +5,8 @@ import SectionHeader from '../common/SectionHeader';
 
 const items = [
   {
-    title: 'Government ID',
-    desc: 'Companions complete identity verification before going live.',
+    title: 'Manual ID Review',
+    desc: 'Our team reviews every companion’s ID documents by hand before they go live.',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6" aria-hidden>
         <rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" strokeWidth="1.75" />
@@ -77,7 +77,7 @@ export default function Safety() {
         <SectionHeader
           eyebrow="Safety"
           title="Designed Around Safety."
-          subtitle="Government verified companions. Public meetups only. Community guidelines. Emergency support. Leave anytime."
+          subtitle="Manually verified companions. Public meetups only. Community guidelines. Emergency support. Leave anytime."
           light
         />
 

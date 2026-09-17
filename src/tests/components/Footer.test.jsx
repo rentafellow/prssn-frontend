@@ -11,16 +11,20 @@ describe('Footer Component', () => {
     render(<Footer />);
     
     expect(screen.getAllByText(/prsnn/i).length).toBeGreaterThan(0);
-    expect(screen.getByText(/Presence without pressure/i)).toBeInTheDocument();
+    expect(screen.getByText(/Verified companionship/i)).toBeInTheDocument();
   });
 
   it('renders explore links', () => {
     render(<Footer />);
-    
-    const links = ['Find a Companion', 'The Handshake', 'About', 'Contact'];
+
+    const links = ['Find Companion', 'Become Companion', 'How it Works', 'Safety', 'FAQ'];
     links.forEach(link => {
       expect(screen.getByText(link)).toBeInTheDocument();
     });
+
+    // 'Contact' intentionally uses getAllByText: it appears in both the
+    // Navigate and Legal columns.
+    expect(screen.getAllByText('Contact').length).toBeGreaterThan(0);
   });
 
   it('renders legal links', () => {

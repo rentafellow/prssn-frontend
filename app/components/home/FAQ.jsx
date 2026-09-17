@@ -15,7 +15,7 @@ const faqs = [
   },
   {
     q: 'Are companions verified?',
-    a: 'Yes. Companions complete government ID verification before they can accept bookings.',
+    a: 'Yes. Every companion submits their ID documents, and our team reviews each one manually before they can accept bookings.',
   },
   {
     q: 'Can I leave a session early?',

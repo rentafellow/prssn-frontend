@@ -6,7 +6,7 @@ import Reveal from '../common/Reveal';
 const cards = [
   {
     title: 'Verified Humans',
-    desc: 'Government ID checks before anyone shows up as a companion.',
+    desc: 'Every companion’s ID is manually reviewed by our team before they show up.',
   },
   {
     title: 'Public Spaces Only',

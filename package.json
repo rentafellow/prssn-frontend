@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "vitest run"
   },
   "dependencies": {
     "@sentry/nextjs": "^10.44.0",
@@ -30,5 +31,9 @@
     "jsdom": "^29.0.1",
     "tailwindcss": "^4",
     "vitest": "^4.1.0"
+  },
+  "packageManager": "pnpm@11.18.0",
+  "engines": {
+    "node": ">=20"
   }
 }
