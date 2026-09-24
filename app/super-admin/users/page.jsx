@@ -151,10 +151,10 @@ const UsersList = () => {
                             User Database
                         </div>
                         <h1 className="text-4xl font-bold text-gray-900 tracking-tight">
-                            {roleFilter === 'companion' ? 'All Companions' : 'All Users'}
+                            {roleFilter === 'companion' ? 'All Companions' : roleFilter === 'user' ? 'Normal Users' : 'All Users'}
                         </h1>
                         <p className="text-gray-500 font-medium mt-2">
-                            {roleFilter === 'companion' ? 'View, manage, and delete companion accounts.' : 'View, manage, and delete user accounts.'}
+                            {roleFilter === 'companion' ? 'View, manage, and delete companion accounts.' : roleFilter === 'user' ? 'View, manage, and delete normal user accounts.' : 'View, manage, and delete all user accounts.'}
                         </p>
                     </div>
                      <div className="relative w-full md:w-96">
