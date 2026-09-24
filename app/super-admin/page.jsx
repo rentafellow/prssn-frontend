@@ -279,6 +279,16 @@ const SuperAdminPanel = () => {
                     </div>
                     <p className="text-gray-400 text-xs font-bold uppercase tracking-widest relative z-10">Total Companions</p>
                     <h3 className="text-4xl font-bold text-gray-900 mt-2 relative z-10 tracking-tight">{analytics.totalFellows}</h3>
+                    <div className="flex gap-4 mt-6 text-xs font-bold relative z-10">
+                        <span className="text-green-600 cursor-pointer hover:underline flex items-center gap-1" onClick={(e) => { e.stopPropagation(); router.push('/super-admin/users?role=companion&status=verified'); }}>
+                            <span className="w-2 h-2 rounded-full bg-green-500"></span>
+                            {analytics.verifiedFellows || 0} Verified
+                        </span>
+                        <span className="text-yellow-600 cursor-pointer hover:underline flex items-center gap-1" onClick={(e) => { e.stopPropagation(); router.push('/super-admin/users?role=companion&status=pending'); }}>
+                            <span className="w-2 h-2 rounded-full bg-yellow-500"></span>
+                            {analytics.pendingFellows || 0} Pending
+                        </span>
+                    </div>
                 </div>
 
                  {/* Admins Card */}
