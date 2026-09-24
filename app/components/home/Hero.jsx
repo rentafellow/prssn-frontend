@@ -3,6 +3,7 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useAuth } from '../../context/AuthContext';
+import axios from 'axios';
 
 const floatingChips = [
   { label: 'Verified', pos: 'top-4 left-4 md:-left-4' },
@@ -21,6 +22,19 @@ const trustItems = [
 const Hero = () => {
   const router = useRouter();
   const { userData, token } = useAuth();
+  const [stats, setStats] = React.useState(null);
+
+  React.useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/public/stats`);
+        setStats(res.data);
+      } catch (err) {
+        console.error('Error fetching stats:', err);
+      }
+    };
+    fetchStats();
+  }, []);
 
   return (
     <section className="relative w-full overflow-hidden bg-ink text-paper">
@@ -85,7 +99,9 @@ const Hero = () => {
 
           <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 animate-hero-rise-d3">
             <span className="text-signal text-sm tracking-tight">★★★★★</span>
-            <span className="text-sm font-medium text-white/60">Trusted by early users</span>
+            <span className="text-sm font-medium text-white/60">
+              Trusted by {stats ? `${stats.users}+ users and ${stats.companions}+ verified companions` : 'early users'}
+            </span>
           </div>
 
           <div className="mt-6 flex flex-wrap gap-2.5 animate-hero-rise-d3">
