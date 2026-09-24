@@ -44,7 +44,6 @@ export default function RootLayout({ children }) {
         <AuthProvider>
           <NotificationProvider>
             <GlobalClickGuard />
-            <VerificationGuard />
             <NavBar />
             {children}
             <Footer />

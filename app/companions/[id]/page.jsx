@@ -70,26 +70,7 @@ const FellowProfile = () => {
             return;
         }
 
-        // 2. Check if user is verified
-        const { role, verificationStatus, is_verified } = userData;
-        // Superadmins bypass verification
-        const isSuperAdmin = role === 'superadmin';
-        // Check verification (handling both modern is_verified boolean and legacy verificationStatus string)
-        const isVerifiedUser = is_verified || verificationStatus === 'verified' || isSuperAdmin;
-
-        if (!isVerifiedUser) {
-             if (verificationStatus === 'pending') {
-                 showNotification('error', "Your verification is still pending. You cannot make bookings until an admin approves your profile.");
-             } else if (verificationStatus === 'rejected') {
-                 showNotification('error', "Your verification was rejected. Please update your profile documents.");
-                 router.push('/profile');
-             } else {
-                 // Not submitted or unknown
-                 const proceed = confirm("You must be a verified member to book a fellow. Would you like to complete verification now?");
-                 if (proceed) router.push('/onboarding');
-             }
-             return;
-        }
+        // Removed verification check as per requirements
         
         try {
             const fellowId = fellow.id || fellow._id || fellow.userId;
