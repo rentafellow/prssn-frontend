@@ -11,6 +11,7 @@ const UsersList = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
     const statusFilter = searchParams.get('status'); // 'verified', 'pending', or null
+    const roleFilter = searchParams.get('role'); // 'companion' or null
 
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -88,7 +89,7 @@ const UsersList = () => {
 
     useEffect(() => {
         setPage(1);
-    }, [searchTerm, statusFilter]);
+    }, [searchTerm, statusFilter, roleFilter]);
 
     // Prepare User Data (Filter + Pagination)
     const filteredUsers = users.filter(user => {
@@ -97,12 +98,17 @@ const UsersList = () => {
         
         let matchesStatus = true;
         if (statusFilter === 'verified') {
-            matchesStatus = user.is_verified;
+            matchesStatus = user.verification_status === 'verified';
         } else if (statusFilter === 'pending') {
-            matchesStatus = !user.is_verified;
+            matchesStatus = user.verification_status !== 'verified';
         }
 
-        return matchesSearch && matchesStatus;
+        let matchesRole = true;
+        if (roleFilter) {
+            matchesRole = user.role === roleFilter;
+        }
+
+        return matchesSearch && matchesStatus && matchesRole;
     });
 
     const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
@@ -144,8 +150,12 @@ const UsersList = () => {
                         <div className='inline-block px-3 py-1 rounded-full bg-indigo-900 text-white text-xs font-bold tracking-wide mb-4 shadow-sm'>
                             User Database
                         </div>
-                        <h1 className="text-4xl font-bold text-gray-900 tracking-tight">All Users</h1>
-                        <p className="text-gray-500 font-medium mt-2">View, manage, and delete user accounts.</p>
+                        <h1 className="text-4xl font-bold text-gray-900 tracking-tight">
+                            {roleFilter === 'companion' ? 'All Companions' : 'All Users'}
+                        </h1>
+                        <p className="text-gray-500 font-medium mt-2">
+                            {roleFilter === 'companion' ? 'View, manage, and delete companion accounts.' : 'View, manage, and delete user accounts.'}
+                        </p>
                     </div>
                      <div className="relative w-full md:w-96">
                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -187,13 +197,18 @@ const UsersList = () => {
                                                     </div>
                                                     <div>
                                                         <p className="font-bold text-gray-900 text-base">{user.username}</p>
-                                                        <p className="text-xs text-gray-500 font-medium">{user.email}</p>
+                                                        <div className="flex items-center gap-2">
+                                                            <p className="text-xs text-gray-500 font-medium">{user.email}</p>
+                                                            <span className="text-[9px] font-bold uppercase bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded-md">
+                                                                {user.role}
+                                                            </span>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td className="px-8 py-5">
                                                 <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                                                    user.is_verified 
+                                                    user.verification_status === 'verified'
                                                     ? 'bg-green-50 text-green-700' 
                                                     : 'bg-yellow-50 text-yellow-700'
                                                 }`}>
