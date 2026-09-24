@@ -220,9 +220,8 @@ const OnboardingPage = () => {
             // Refresh user profile to update status
             await fetchProfile(token, userData);
 
-            // Instead of redirecting home, show pending screen
-            setPageStatus('pending');
-            window.scrollTo(0, 0); // Scroll to top
+            // Redirect to home since basic users are automatically verified
+            router.push('/');
         } catch (err) {
             console.error(err);
             alert(err.response?.data?.message || "Failed to create profile");
@@ -340,13 +339,13 @@ const OnboardingPage = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                     </svg>
                   </div>
-                  <h1 className="text-3xl font-bold text-gray-900 mb-4 tracking-tight">Verification Pending</h1>
+                  <h1 className="text-3xl font-bold text-gray-900 mb-4 tracking-tight">Verified</h1>
                   <p className="text-gray-500 font-medium mb-8 leading-relaxed text-lg">
-                    Thank you for submitting your profile! <br/>
-                    Your information is currently under review.
+                    Your profile is complete and verified! <br/>
+                    You can now use all features of the platform.
                   </p>
                   <div className="w-full bg-gray-100 rounded-full h-2 mb-8 overflow-hidden">
-                    <div className="bg-green-500 h-full rounded-full w-1/2 animate-loading"></div>
+                    <div className="bg-green-500 h-full rounded-full w-full"></div>
                   </div>
                   <button onClick={() => router.push('/')} className="w-full py-4 bg-gray-900 text-white font-bold rounded-2xl hover:bg-black transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
                       Return Home
